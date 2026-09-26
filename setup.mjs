@@ -52,11 +52,21 @@ async function main() {
   console.log("\n========== TabTasks 付费闭环部署向导 ==========\n");
 
   // ---------- 1. Cloudflare 登录 ----------
-  step(1, "检查 Cloudflare 登录状态（未登录会弹浏览器，点一下『Allow』即可）");
+  step(1, "检查 Cloudflare 登录状态");
   try {
     await run("npx", ["--yes", "wrangler", "whoami"]);
-    console.log("✅ 已登录 Cloudflare");
+    console.log("✅ 已登录 Cloudflare，直接进入下一步");
   } catch {
+    console.log(`
+  ┌─ 你还没有登录 Cloudflare，接下来会发生：
+  │  1) 自动弹出浏览器，打开 Cloudflare 授权页（没弹就等几秒或看任务栏）
+  │  2) 页面里：有账号 → 输密码登录；没账号 → 点 sign up 用邮箱免费注册
+  │  3) 登录后点蓝色的 【Allow】 允许 wrangler 访问
+  │  4) 回到本终端，看到 Successfully logged in 即成功，脚本自动继续
+  │
+  │  ⚠️ 若长时间没反应（你可能开了代理）：按 Ctrl+C 退出本脚本，
+  │     手动执行  npx wrangler login  完成授权后，再重新运行 node setup.mjs
+  └─`);
     await run("npx", ["--yes", "wrangler", "login"]);
     await run("npx", ["--yes", "wrangler", "whoami"]);
     console.log("✅ 授权完成");
