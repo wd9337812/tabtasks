@@ -2,16 +2,18 @@
 
 目标：`扩展购买按钮 → Worker /buy → Stripe 结账 → 成功页自动展示 License Key → 粘贴激活`
 
-## 需要配置的参数（共 4 处，务必两两一致）
+## 需要配置的参数（共 5 处，务必两两一致）
 
 | # | 位置 | 参数 | 填什么 |
 |---|------|------|--------|
 | 1 | Worker secret | `LIC_SECRET` | 随机长串，如 `openssl rand -hex 24` 的输出 |
-| 2 | Worker vars（wrangler.toml） | `STRIPE_PAYMENT_LINK` | Stripe Payment Link 完整 URL |
-| 3 | Stripe 后台（Payment Link → Confirmation page） | Success URL | `https://<你的worker域名>/success?sid={CHECKOUT_SESSION_ID}` |
-| 4 | 扩展 config.js | `SECRET` / `STRIPE_PAYMENT_LINK` | = 参数1 / = `https://<你的worker域名>/buy` |
+| 2 | Worker secret | `STRIPE_SECRET_KEY` | Stripe 后台 Developers → API keys 里的 `sk_test_…`（正式收款换 `sk_live_…`） |
+| 3 | Worker vars（wrangler.toml） | `STRIPE_PAYMENT_LINK` | Stripe Payment Link 完整 URL |
+| 4 | Stripe 后台（Payment Link → Confirmation page） | Success URL | `https://<你的worker域名>/success?sid={CHECKOUT_SESSION_ID}` |
+| 5 | 扩展 config.js | `SECRET` / `STRIPE_PAYMENT_LINK` | = 参数1 / = `https://<你的worker域名>/buy` |
 
-> 一致性规则：**1 = 4 的 SECRET**（否则验签失败）；**3 的域名 = 部署后实际域名**。
+> 一致性规则：**1 和 5 的 SECRET 必须相同**（否则验签失败）；**4 的域名 = 部署后实际域名**。
+> Worker 用参数 2 向 Stripe 核实订单已付款才发 Key——这是防伪造 sid 白嫖的关键。
 
 ## 步骤
 
@@ -29,9 +31,9 @@
 ### B. Cloudflare Worker（约 3 分钟）
 ```bash
 cd worker
-npm login --scope=whatever 2>/dev/null   # 不需要，npx 直接可用
 npx wrangler login          # 弹出浏览器授权你的 CF 账号（免费账号即可）
-npx wrangler secret put LIC_SECRET        # 粘贴参数 1 生成的随机串
+npx wrangler secret put LIC_SECRET        # 粘贴参数 1
+npx wrangler secret put STRIPE_SECRET_KEY # 粘贴参数 2（sk_test_…）
 npx wrangler deploy
 ```
 部署完输出 `https://tabtasks-pro-api.<你的子域>.workers.dev` —— 这就是 `<worker域名>`。

@@ -72,12 +72,17 @@ async function main() {
     console.log("✅ 授权完成");
   }
 
-  // ---------- 2. Stripe 链接 ----------
-  step(2, "输入你的 Stripe Payment Link");
-  console.log("（Stripe 后台 → Payment links → 新建 $6 一次性付款 → 复制完整链接）");
-  let stripeLink = (await ask("粘贴链接（https://buy.stripe.com/…）: ")).trim();
+  // ---------- 2. Stripe 链接 + API key ----------
+  step(2, "输入你的 Stripe Payment Link 与 API secret key");
+  console.log("（Payment Link：Stripe 后台 → Payment links → 复制 https://buy.stripe.com/…）");
+  console.log("（API key：Stripe 后台 → Developers → API keys → 复制 sk_test_… 开头的标准密钥）");
+  let stripeLink = (await ask("粘贴 Payment Link: ")).trim();
   while (!/^https:\/\/buy\.stripe\.com\/.+/.test(stripeLink) && !/^https:\/\/[a-z0-9.-]+\.(lemonsqueezy|gumroad|paddle)/i.test(stripeLink)) {
     stripeLink = (await ask("  链接格式不对，请重新粘贴: ")).trim();
+  }
+  let stripeKey = (await ask("粘贴 API secret key（sk_test_… / sk_live_…）: ")).trim();
+  while (!/^sk_(test|live)_[A-Za-z0-9]+/.test(stripeKey)) {
+    stripeKey = (await ask("  key 格式不对（应以 sk_test_ 或 sk_live_ 开头），重新粘贴: ")).trim();
   }
 
   // ---------- 3. 生成 SECRET 并写入三处 ----------
@@ -97,9 +102,12 @@ async function main() {
   console.log("⚠️ config.js 现在含有真实 SECRET——若仓库在 GitHub 是公开的，请勿把这个版本的 config.js 再 commit/push。");
 
   // ---------- 4. 部署 Worker ----------
-  step(4, "上传 SECRET 并部署 Worker 到 Cloudflare（约 30 秒）");
+  step(4, "上传 SECRET / STRIPE_SECRET_KEY 并部署 Worker 到 Cloudflare（约 30 秒）");
   await run("npx", ["--yes", "wrangler", "secret", "put", "LIC_SECRET"], {
     cwd: WORKER_DIR, stdinValue: SECRET, pipe: true,
+  });
+  await run("npx", ["--yes", "wrangler", "secret", "put", "STRIPE_SECRET_KEY"], {
+    cwd: WORKER_DIR, stdinValue: stripeKey, pipe: true,
   });
   const deployOut = await run("npx", ["--yes", "wrangler", "deploy"], {
     cwd: WORKER_DIR, pipe: true,

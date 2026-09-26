@@ -1,12 +1,14 @@
 /**
  * TabTasks Pro — Cloudflare Worker 收款后端（零成本方案）
  * ================================================================
- * 思路：不需要查询 Stripe API，也不发邮件。
+ * 思路：不用 webhook、不发邮件。
  *   1) 扩展/落地页打开  /buy      → 302 跳到你的 Stripe Payment Link
  *   2) Stripe 付款成功后回到       /success?sid={CHECKOUT_SESSION_ID}
- *      （Payment Link 的 Success URL 支持该占位符，会自动替换）
- *   3) Worker 用 HMAC(SECRET, sid) 派生出「确定性 License Key」直接展示。
- *      同一个 sid 永远算出同一个 key；没付款的人拿不到有效 sid。
+ *      （Payment Link 的 Success URL 支持该占位符，会自动替换；
+ *        也兼容 Stripe 追加的 ?reference=cs_xxx）
+ *   3) Worker 拿 sid 调 Stripe API 核实 payment_status == paid
+ *      （防任何人编造 sid 白嫖），核实通过才用 HMAC(SECRET, sid)
+ *      派生「确定性 License Key」展示。同一订单刷新页面 Key 不变。
  *
  * 密钥算法与扩展 license.js / tools/keygen.mjs --sid 完全一致：
  *   payload = {"plan":"pro","label":"<sid>","via":"stripe"}
@@ -67,12 +69,28 @@ export default {
       // 兼容两种来源：我们配置的 ?sid={CHECKOUT_SESSION_ID}，
       // 以及 Stripe Payment Link 自动追加的 ?reference=cs_xxx
       const sid = url.searchParams.get("sid") || url.searchParams.get("reference") || "";
+      const errPage = (msg) => new Response(
+        HTML(`<h1 class="err">⚠️ ${msg}</h1><p class="note">如刚完成付款请刷新重试；仍不行请联系支持。</p>`),
+        { headers: { "content-type": "text/html; charset=utf-8" } }
+      );
       if (!/^cs_(?:live|test)_[A-Za-z0-9]{6,}$/.test(sid)) {
         return new Response(
           HTML(`<h1 class="err">未找到付款编号</h1><p class="note">URL 缺少 <code>?sid=</code>。请确认 Stripe 的
           Success URL 设为：<code>${url.origin}/success?sid={CHECKOUT_SESSION_ID}</code></p>`),
           { headers: { "content-type": "text/html; charset=utf-8" } }
         );
+      }
+      // —— 关键防伪造：向 Stripe API 核实该订单确实已付款 ——
+      if (!env.STRIPE_SECRET_KEY) return errPage("服务端尚未配置 STRIPE_SECRET_KEY");
+      let session = null;
+      try {
+        const r = await fetch(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sid)}`, {
+          headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
+        });
+        session = await r.json();
+      } catch (e) { return errPage("查询 Stripe 超时，请刷新重试"); }
+      if (!session || session.object !== "checkout.session" || session.payment_status !== "paid") {
+        return errPage("该订单未查到已付款记录");
       }
       const key = await computeKey(env.LIC_SECRET, sid);
       return new Response(
