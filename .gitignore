@@ -1,0 +1,8 @@
+# 本地测试密钥与打包产物，勿提交
+dev/
+*.crx
+*.pem
+
+# 杂项
+.DS_Store
+node_modules/

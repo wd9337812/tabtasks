@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabTasks</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="bar">
+      <div class="brand">
+        <span class="logo"></span>
+        <strong>TabTasks</strong>
+      </div>
+      <div class="bar-right">
+        <span id="planBadge" class="plan plan-free">FREE</span>
+        <button id="btnUpgrade" class="icon-btn" title="Pro / Settings">⚙</button>
+      </div>
+    </header>
+
+    <section class="capture">
+      <button id="btnCapture" class="capture-btn" title="把当前页面收集为任务">
+        <span class="plus">＋</span> 收集当前页面
+      </button>
+      <input id="quickAdd" class="quick-add" type="text"
+             placeholder="快速添加任务，回车保存…" />
+    </section>
+
+    <nav id="listTabs" class="list-tabs"></nav>
+
+    <main id="taskList" class="task-list"></main>
+
+    <footer class="foot">
+      <span id="counter">0 项</span>
+      <div class="foot-actions">
+        <button id="btnExport" class="link-btn">导出</button>
+        <button id="btnClearDone" class="link-btn">清除已完成</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 升级 / 设置抽屉 -->
+  <div id="drawer" class="drawer hidden">
+    <div class="drawer-head">
+      <h3>TabTasks Pro</h3>
+      <button id="btnCloseDrawer" class="icon-btn">✕</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="pro-points">
+        <li>无限活动任务 &amp; 无限列表</li>
+        <li>任务标签分类</li>
+        <li>抓取页面正文摘要</li>
+        <li>一键导出 / 导入备份</li>
+      </ul>
+
+      <div class="price-card">
+        <div class="price">
+          <span class="amount">$6</span>
+          <span class="per">一次性买断 · 全平台</span>
+        </div>
+        <a id="btnBuy" class="buy-btn" href="#" target="_blank" rel="noopener">购买 Pro</a>
+        <p class="buy-note">付款后你会收到 License Key，粘贴到下方即可解锁。</p>
+      </div>
+
+      <div class="activate">
+        <label>已有 License Key？</label>
+        <textarea id="licenseInput" placeholder="PRO·xxxx.yyyy 粘贴到这里"></textarea>
+        <div class="activate-row">
+          <button id="btnActivate" class="buy-btn ghost">激活</button>
+          <button id="btnDeactivate" class="link-btn">解除本设备</button>
+        </div>
+        <p id="licStatus" class="lic-status"></p>
+      </div>
+
+      <div class="lists-admin">
+        <h4>列表</h4>
+        <div id="adminLists"></div>
+        <button id="btnAddList" class="link-btn">＋ 新建列表</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script>
+  // 预览/开发专用：直接用浏览器打开本文件（file://，无 chrome.* 扩展环境）时提供最小桩，
+  // 方便双击查看 UI 效果与 ?demo=pro|free|paywall 演示态。在真实扩展环境中本段不生效。
+  if (typeof chrome === "undefined" || !chrome.storage) {
+    window.chrome = {
+      storage: { local: { get: async () => ({}), set: async () => {}, remove: async () => {} } },
+      runtime: { sendMessage: () => Promise.resolve(), onMessage: { addListener: () => {} } },
+      tabs: { query: async () => [{ url: "https://example.com", title: "示例页面" }] },
+      scripting: { executeScript: async () => [{ result: { title: "示例页面", url: "https://example.com", excerpt: "" } }] },
+    };
+  }
+  </script>
+  <script src="config.js"></script>
+  <script src="license.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>

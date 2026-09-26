@@ -1,0 +1,16 @@
+# wrangler.toml — Cloudflare Worker 部署配置
+# 部署:  npm i -D wrangler (或直接用 npx wrangler)
+#        npx wrangler secret put LIC_SECRET   # 交互输入，与扩展 config.js 的 SECRET 一致
+#        npx wrangler deploy
+# 免费版：每天 10 万次请求，本场景远用不完 => 0 成本
+
+name = "tabtasks-pro-api"
+main = "index.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+# 你的 Stripe Payment Link（付款链接本身可公开，密钥在成功页才派生）
+STRIPE_PAYMENT_LINK = "https://buy.stripe.com/REPLACE_ME"
+
+# LIC_SECRET 不要写在这里！用命令行注入：
+#   npx wrangler secret put LIC_SECRET
