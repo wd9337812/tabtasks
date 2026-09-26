@@ -14,7 +14,7 @@
 | 截图 ≥2 张（建议 640×400 以上） | ✅ 已有 3 张 | `side-task-collector/previews/`（pro / free / paywall） |
 | 简短描述（≤132 字符） | ✅ 见下文 §3 文案 | 直接复制 |
 | 详细描述（≤16000 字符） | ✅ 见下文 §3 文案 | 直接复制 |
-| 隐私政策 URL | ⚠️ 需要 1 个 | 见 §2（给了 3 种免费做法） |
+| 隐私政策 URL | ✅ 页面已写好，开 Pages 即得 | 见 §2（30 秒 3 次点击） |
 | Google 账号 + 银行卡 | 你本人准备 | 注册开发者账号要 $5 |
 
 > 截图尺寸不够？商店允许 128×128 ~ 3840×2160，我们的 380×780 可用；
@@ -36,17 +36,19 @@
 
 ---
 
-## 2. 隐私政策 URL（三选一，全部免费）
+## 2. 隐私政策 URL（已备好 ✅）
 
-扩展上架**必须**提供一个公开隐私政策链接。本扩展数据全部存本地、不上传任何服务器，
-如实写即可。三种做法按省事程度排：
+- **页面已写好**：`docs/PRIVACY.html`（中英双语，如实声明"数据仅本地存储、不收集"）
+- **只差开启 GitHub Pages（30 秒，3 次点击）**：
+  打开 https://github.com/wd9337812/tabtasks/settings/pages →
+  Source 选 **Deploy from a branch** → Branch 选 **main**、文件夹选 **/docs** → Save
+- 约 1 分钟后生效，商店里填这个 URL：
 
-- **A. 用现成生成器（3 分钟）**：https://app-privacy-policy-generator.firebaseapp.com/
-  选 Chrome Extension → 数据不收集/仅本地 → 生成 → 托管到它给的免费页面或 GitHub Pages。
-- **B. GitHub Pages（推荐，仓库你已有）**：在 `tabtasks` 仓库新建 `PRIVACY.md` +
-  开 Pages（Settings → Pages），得到 `https://wd9337812.github.io/tabtasks/PRIVACY.html`。
-  需要我直接帮你写这个页面并推送，说一声即可。
-- **C. Notion/语雀公开页**：粘贴文本设为公开访问。
+```
+https://wd9337812.github.io/tabtasks/PRIVACY.html
+```
+
+- 验证：浏览器打开上面链接能看到页面即成功（首次可能慢几十秒）。
 
 ---
 

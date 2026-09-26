@@ -64,8 +64,10 @@ export default {
     }
 
     if (url.pathname === "/success") {
-      const sid = url.searchParams.get("sid") || "";
-      if (!/^cs_[A-Za-z0-9]{10,}$/.test(sid)) {
+      // 兼容两种来源：我们配置的 ?sid={CHECKOUT_SESSION_ID}，
+      // 以及 Stripe Payment Link 自动追加的 ?reference=cs_xxx
+      const sid = url.searchParams.get("sid") || url.searchParams.get("reference") || "";
+      if (!/^cs_(?:live|test)_[A-Za-z0-9]{6,}$/.test(sid)) {
         return new Response(
           HTML(`<h1 class="err">未找到付款编号</h1><p class="note">URL 缺少 <code>?sid=</code>。请确认 Stripe 的
           Success URL 设为：<code>${url.origin}/success?sid={CHECKOUT_SESSION_ID}</code></p>`),

@@ -18,11 +18,12 @@
 ### A. Stripe（约 3 分钟）
 1. https://dashboard.stripe.com → **Payment links** → + Create a payment link
 2. 选/建一个 One-time 产品，价格 $6 → 创建
-3. 编辑该链接 → *After payment* → 选 **Take customers to a custom URL**，
-   先临时填 `https://example.com`（Worker 部署后回来改成真实域名）
-   - Stripe 会自动在 URL 后追加 `?sid={CHECKOUT_SESSION_ID}`？——不会。
-     所以确认页 URL 直接填：`https://<worker域名>/success?sid={CHECKOUT_SESSION_ID}`
-     （Payment Link 支持该占位符替换）
+   - ✅ **一个链接可无限次复用**（官方文档：可被多个客户重复付款；
+     别勾选 "Limit the number of payments" 这个可选限购开关即可）
+3. 编辑该链接 → *After payment* → 选 **Take customers to a custom URL**，填：
+   `https://<worker域名>/success?sid={CHECKOUT_SESSION_ID}`
+   - 若你的 Stripe 界面不支持该占位符，直接填 `https://<worker域名>/success` 也可以——
+     Payment Link 会自动在 URL 后追加 `?reference=cs_xxx`，Worker 两种参数都认
 4. 复制 Payment Link URL → 填 wrangler.toml 的参数 2
 
 ### B. Cloudflare Worker（约 3 分钟）
