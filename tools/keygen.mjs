@@ -49,6 +49,27 @@ if (sid) {
   process.exit(0);
 }
 
+// 批量模式：node tools/keygen.mjs --secret X --num 50 --out keys.txt
+// 用途：把 keys.txt 每行一把导入 Gumroad / Lemon Squeezy 的 license key 池，实现自动发货
+const num = get("num");
+if (num) {
+  const { randomBytes } = await import("node:crypto");
+  const lines = [];
+  for (let i = 0; i < Number(num); i++) {
+    const payload = { plan: "pro", label: "pool_" + randomBytes(6).toString("hex"), via: "pool" };
+    const payloadB64 = b64url(JSON.stringify(payload));
+    const sig = b64url(createHmac("sha256", secret).update(payloadB64).digest());
+    lines.push(`${payloadB64}.${sig}`);
+  }
+  const out = get("out");
+  if (out) {
+    const { writeFileSync } = await import("node:fs");
+    writeFileSync(out, lines.join("\n") + "\n");
+    console.log(`✅ ${num} 把密钥已写入 ${out}`);
+  } else console.log(lines.join("\n"));
+  process.exit(0);
+}
+
 const plan = get("plan") || "pro";
 const days = get("days");
 const label = get("label") || "";

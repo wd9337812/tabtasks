@@ -119,6 +119,9 @@ node tools/keygen.mjs --secret "<SECRET>" --days 365 --label x@y.com  # 任意�
 
 ## 4. 提交 Chrome Web Store（拿自然流量的关键）
 
+> 📖 **零基础逐步版（含 $5 注册、隐私政策、权限理由、文案、合规避坑）：
+> [`docs/chrome-store-publish-guide.md`](docs/chrome-store-publish-guide.md)**
+
 1. 到 [chromewebstore.dev](https://chrome.google.com/webstore/devconsole) 注册（一次性 $5）。
 2. 打包上传：把 `side-task-collector/` 目录压成 zip 上传即可
    （商店用 zip，不用 .crx；本目录下 `packtest/` 里的 `.pem` 是本地测试密钥，别打包进去）。
