@@ -66,6 +66,8 @@ FREE: {
 > Worker 不查 Stripe API、不用 webhook、不用发邮件：付款成功页的
 > `sid`（Checkout Session ID）经 HMAC 派生出**确定性 License Key**直接展示，
 > 买完即得。Cloudflare 免费计划（10 万请求/天）远够用。
+>
+> **逐步部署手册（含 4 处参数对照表与端到端验收清单）见 [`worker/DEPLOY.md`](worker/DEPLOY.md)。**
 
 ```
 扩展点「购买 Pro」 → Worker /buy → 302 → Stripe 结账页
