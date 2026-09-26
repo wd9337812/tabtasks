@@ -77,6 +77,17 @@ FREE: {
 
 **一次性配置（约 10 分钟）：**
 
+> 🧭 **新手推荐**：在本目录运行 `node setup.mjs`，交互式向导会自动完成下面
+> 的生成 SECRET、写配置、部署 Worker、回填域名、健康检查，并给你本人
+> 签发一把永久 Pro Key；结束后只需去 Stripe 后台粘贴一个 Success URL。
+>
+> ☁️ 也可在 Cloudflare Dashboard → Workers & Pages → Import from Git 关联
+> 本仓库自动部署（Root directory 填 `worker`，Build command 留空，
+> 并在 Variables 里添加加密变量 `LIC_SECRET`）。
+>
+> ⚠️ 运行 `setup.mjs` 后 `config.js` 会包含真实 SECRET——公开仓库请勿再提交该文件
+> （本地可 `git update-index --skip-worktree config.js` 让 git 忽略你的改动）。
+
 1. **Stripe**：Dashboard → Payment Links → 新建 $6 一次性付款链接；
    在链接的 *After payment → Confirmation page* 里把 Success URL 设为
    `https://<你的worker域名>/success?sid={CHECKOUT_SESSION_ID}`。
