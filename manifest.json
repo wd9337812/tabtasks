@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "TabTasks — Sidebar To-Do & Page Collector",
   "version": "0.1.0",
-  "description": "Turn any page into a to-do in one click. A lightweight sidebar task collector that keeps your reading and your tasks in the same place.",
+  "description": "Turn any web page into a to-do in one click. A lightweight sidebar task collector with lists, due dates, all local.",
   "author": "you",
   "permissions": ["storage", "activeTab", "scripting", "sidePanel", "tabs"],
   "host_permissions": ["<all_urls>"],
