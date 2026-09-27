@@ -4,7 +4,7 @@
 > 依据：Google 官方 [cws-dashboard-privacy](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)、
 > [best-listing](https://developer.chrome.com/docs/webstore/best-listing)、
 > [program-policies](https://developer.chrome.com/docs/webstore/program-policies)。
-> 审核时长：新账号首次 1~5 天常见；含 `<all_urls>` 会走人工深入审核（页面顶部黄条提示属正常，无法避免，理由写扎实即可）。
+> 审核时长：新账号首次 1~5 天常见。v0.2.0 已移除 `<all_urls>`，不再触发"发布将被推迟"黄条。
 
 ---
 
@@ -114,7 +114,7 @@ Capture the page the user is viewing as a to-do task and manage local task lists
 ### 5.2 需请求权限的理由（每个权限一格，英文，勿中英混排）
 
 > 官方要求：逐条说明"这个权限对应哪个具体功能"。写错格子（把 tabs 的理由填进
-> storage）会被视为披露不实 → 拒审。以下六格一一对应，直接复制。
+> storage）会被视为披露不实 → 拒审。以下五格一一对应，直接复制。
 
 **storage**
 
@@ -125,13 +125,13 @@ chrome.storage.local is the extension's only persistence layer: it saves the use
 **activeTab**
 
 ```
-Grants one-time access to the tab that is active at the moment the user clicks the toolbar icon or presses Alt+Shift+T. This is how "collect current page" knows which page to capture. Access only happens on that explicit user gesture.
+Grants one-time access to the tab that is active when the user clicks the toolbar icon or presses Alt+Shift+T. This is how TabTasks reads the page for "collect current page" and, for Pro users, extracts an optional text excerpt via scripting. No broad host access is requested.
 ```
 
 **scripting**
 
 ```
-After the user gesture above, chrome.scripting.executeScript runs one small read-only function in the active tab that returns the page's title and URL (plus an optional text excerpt for Pro users) so the captured task shows where it came from. The script never modifies the page and never reads forms, cookies or credentials.
+Only under the activeTab grant above, chrome.scripting.executeScript runs one small read-only function in that single tab to get the document title and, for Pro users who enabled it, a short excerpt (meta description or current selection). It never runs on other tabs, never modifies pages, never reads forms, cookies or credentials, and its result is only written to local storage.
 ```
 
 **sidePanel**
@@ -143,14 +143,14 @@ The sidebar opened via chrome.sidePanel is the extension's entire UI — where t
 **tabs**
 
 ```
-Reads the active tab's title and URL to build each captured task, and listens for tab updates so the sidebar reflects the page the user is on. The extension does not read browsing history and does not enumerate or track other tabs.
+Reads the active tab's title and URL to build each captured task (a task is just title + link, so no page access is needed for the core flow), and listens for tab updates so the sidebar badge stays accurate. The extension does not read browsing history and does not enumerate or track other tabs.
 ```
 
-**主机权限（<all_urls>）**
-
-```
-Capture must work on whatever page the user is reading, so the read-only extraction described under "scripting" needs host access for any site. It is invoked only in the single active tab, only after the user's explicit click or keyboard shortcut, and returns only title/URL/optional excerpt. Nothing runs automatically, no requests are observed or modified, and no page data is sent to any server — the extension has no backend for user content.
-```
+> v0.2.0 起已按 Google 官方建议**移除 `<all_urls>` 主机权限**，改用 activeTab：
+> 表单里不会再出现「需请求主机权限的理由」这一格；之前那条"发布将被推迟/深入审核"
+> 的黄条也会消失，审核速度显著加快。核心捕获（标题+链接）在任何网站照常工作；
+> 仅 Pro 的"正文摘要"要求在点击工具栏图标或按 Alt+Shift+T 后的那个标签页里生效
+> （拿不到摘要时自动降级为只存标题+链接，不报错）。
 
 ### 5.3 远程代码
 
@@ -199,7 +199,7 @@ https://wd9337812.github.io/tabtasks/PRIVACY.html
 ## 7. 提交与审核后
 
 1. 右上角「保存草稿」→ 无红字后「提请审核」
-2. 状态 Pending → Live（首次 1~5 天；含 <all_urls> 可能更久）
+2. 状态 Pending → Live（首次 1~5 天常见）
 3. 通过后拿到 `https://chromewebstore.google.com/detail/<slug>/<id>`，发我，我把落地页 "Add to Chrome" 按钮换上
 4. 立刻做：README 挂链接 → Product Hunt / V2EX / X 拉首批用户评价（前 10 条评论决定搜索转化）
 
@@ -209,8 +209,8 @@ https://wd9337812.github.io/tabtasks/PRIVACY.html
 
 | 拒审原因 | 我们的状态 |
 |----------|-----------|
-| 权限理由为空/含糊/与功能对不上 | §5.2 六格逐一对应，具体到触发时机 |
-| 请求超出单一用途的权限 | 六项权限全部服务于"捕获当前页为任务" |
+| 权限理由为空/含糊/与功能对不上 | §5.2 五格逐一对应，具体到触发时机 |
+| 请求超出单一用途的权限 | 五项权限全部服务于"捕获当前页为任务"，已去掉 <all_urls> |
 | 披露与隐私政策矛盾 | 政策页、数据声明、代码行为三者一致（全本地） |
 | 执行远程代码未申报 | 无远程代码，如实申报"不" |
 | 截图尺寸不符 | store-images/ 全部 1280x800 JPEG 无 alpha |
