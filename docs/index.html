@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TabTasks — Turn any web page into a to-do in one click</title>
+<meta name="description" content="TabTasks is a lightweight Chrome sidebar that captures the page you're reading as a task. Lists, due dates and tags — 100% local. Free with a $6 lifetime Pro." />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: #1e1b4b; background: #fff; }
+  .hero { background: linear-gradient(120deg, #312e81 0%, #4f46e5 45%, #7c3aed 100%); color: #fff; padding: 72px 24px 88px; text-align: center; }
+  .hero .logo { width: 72px; height: 72px; border-radius: 18px; box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+  .hero h1 { font-size: 42px; font-weight: 800; margin-top: 18px; }
+  .hero p.sub { font-size: 19px; color: #ddd6fe; margin-top: 12px; line-height: 1.6; }
+  .btns { margin-top: 28px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-block; font-size: 16px; font-weight: 700; padding: 12px 30px; border-radius: 999px; text-decoration: none; }
+  .btn.a { background: #fff; color: #4338ca; }
+  .btn.b { border: 1.5px solid rgba(255,255,255,.6); color: #fff; }
+  .shots { max-width: 1080px; margin: -48px auto 0; padding: 0 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .shots img { width: 100%; border-radius: 14px; box-shadow: 0 18px 44px rgba(30,27,75,.22); display: block; }
+  section.feat { max-width: 960px; margin: 64px auto; padding: 0 24px; }
+  section.feat h2 { text-align: center; font-size: 28px; margin-bottom: 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
+  .card { background: #f5f3ff; border: 1px solid #ede9fe; border-radius: 14px; padding: 22px; }
+  .card b { font-size: 17px; display: block; margin-bottom: 8px; }
+  .card p { font-size: 14.5px; color: #57536e; line-height: 1.6; }
+  .price { text-align: center; background: linear-gradient(120deg,#eef2ff,#f5f3ff); border-radius: 18px; max-width: 640px; margin: 0 auto; padding: 40px 24px; }
+  .price .n { font-size: 46px; font-weight: 800; color: #4f46e5; }
+  .price p { color: #57536e; margin-top: 8px; font-size: 15px; }
+  footer { text-align: center; font-size: 13.5px; color: #8b8fa8; padding: 48px 24px 40px; }
+  footer a { color: #6366f1; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <img class="logo" src="assets/icon-128.png" alt="TabTasks logo" />
+    <h1>TabTasks</h1>
+    <p class="sub">Turn any web page into a to-do in one click.<br />A lightweight sidebar task collector — your reading and your tasks, finally in the same place.</p>
+    <div class="btns">
+      <!-- TODO: 上架通过后把链接换成 Chrome 应用商店地址 -->
+      <a class="btn a" href="https://chromewebstore.google.com/" rel="noopener">Add to Chrome</a>
+      <a class="btn b" href="https://tabtasks-pro-api.wd933781.workers.dev/buy" rel="noopener">Get Pro · $6</a>
+    </div>
+  </div>
+
+  <div class="shots">
+    <img src="assets/shot-pro.jpg" alt="TabTasks sidebar with tasks, lists, tags and due dates" />
+    <img src="assets/shot-paywall.jpg" alt="TabTasks Pro upgrade panel" />
+  </div>
+
+  <section class="feat">
+    <h2>Why TabTasks</h2>
+    <div class="grid">
+      <div class="card"><b>⚡ One-click capture</b><p>Hit Alt+Shift+T (or one button) and the page you're reading becomes a task, with its link attached.</p></div>
+      <div class="card"><b>🗂 Lists, tags &amp; due dates</b><p>Organize "read later", "research" and "ideas" without leaving the page you're on.</p></div>
+      <div class="card"><b>🔒 100% local</b><p>No account, no server, no tracking. Everything lives in your own browser storage.</p></div>
+      <div class="card"><b>💳 Fair pricing</b><p>Free forever for everyday use. Pro is a one-time $6 lifetime unlock — no subscription.</p></div>
+    </div>
+  </section>
+
+  <section class="feat">
+    <div class="price">
+      <div class="n">$6</div>
+      <p><b>TabTasks Pro — one-time, lifetime</b><br />Unlimited tasks &amp; lists · tags · page excerpt · export/import</p>
+      <p style="margin-top:18px"><a class="btn a" style="background:#4f46e5;color:#fff" href="https://tabtasks-pro-api.wd933781.workers.dev/buy" rel="noopener">Buy Pro</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <a href="PRIVACY.html">Privacy Policy</a> ·
+    <a href="SUPPORT.html">Support</a> ·
+    <a href="https://github.com/wd9337812/tabtasks" rel="noopener">GitHub</a>
+    <p style="margin-top:10px">© 2026 TabTasks</p>
+  </footer>
+</body>
+</html>
