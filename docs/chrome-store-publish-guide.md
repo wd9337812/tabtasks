@@ -1,78 +1,78 @@
-# Chrome 应用商店上架操作指南（TabTasks）
+# Chrome 应用商店上架操作指南（TabTasks）v2
 
-> 面向零基础。全程约 1~2 小时（不含 Google 审核等待）。
-> 审核时长：首次上架的开发者账号通常 1~5 天，之后更新一般几小时~1 天。
-
----
-
-## 0. 准备材料清单（先凑齐再开工，5 分钟）
-
-| 材料 | 我们的现状 | 位置 |
-|------|-----------|------|
-| 扩展代码包 zip | ✅ 已打好 | `5b75f644/tabbtasks-extension-store.zip`（上传商店用这个，**不含**开发文件） |
-| 图标 128×128 | ✅ 已有 | 已在 zip 内；商店表单还要单独传一张 |
-| 截图 ≥2 张（建议 640×400 以上） | ✅ 已有 3 张 | `side-task-collector/previews/`（pro / free / paywall） |
-| 简短描述（≤132 字符） | ✅ 见下文 §3 文案 | 直接复制 |
-| 详细描述（≤16000 字符） | ✅ 见下文 §3 文案 | 直接复制 |
-| 隐私政策 URL | ✅ 页面已写好，开 Pages 即得 | 见 §2（30 秒 3 次点击） |
-| Google 账号 + 银行卡 | 你本人准备 | 注册开发者账号要 $5 |
-
-> 截图尺寸不够？商店允许 128×128 ~ 3840×2160，我们的 380×780 可用；
-> 想要更漂亮可以在扩展目录跑：
-> `chrome --headless=new --window-size=1280,800 --screenshot=big.png "file:///…/sidepanel.html?demo=pro"`
-> 再截图裁剪侧栏区域。
+> 面向零基础。对照开发者后台左侧 4 个标签页逐屏填写，所有英文文案可直接粘贴。
+> 依据：Google 官方 [cws-dashboard-privacy](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)、
+> [best-listing](https://developer.chrome.com/docs/webstore/best-listing)、
+> [program-policies](https://developer.chrome.com/docs/webstore/program-policies)。
+> 审核时长：新账号首次 1~5 天常见；含 `<all_urls>` 会走人工深入审核（页面顶部黄条提示属正常，无法避免，理由写扎实即可）。
 
 ---
 
-## 1. 注册 Chrome 开发者账号（一次性 $5）
+## 0. 准备材料（已全部做好 ✅）
 
-1. 打开 https://chrome.google.com/webstore/devconsole
-2. 用任意 Google 账号登录 → 提示支付 **$5 一次性注册费**（Visa/Master 信用卡）
-   - 国内可用：双币信用卡、或 WildCard/OneKey 等虚拟卡
-   - 需要能正常访问 google.com 的网络环境
-3. 同意开发者协议 → 完成。此页面即"开发者后台"。
+| 材料 | 规格（商店硬性要求） | 位置 |
+|------|---------------------|------|
+| 代码包 zip | manifest 合法、description ≤132 | `5b75f644/tabtasks-extension-store.zip` |
+| 屏幕截图 | **必须 1280x800 或 640x400**，JPEG 或 24 位 PNG（无 alpha），1~5 张 | `5b75f644/store-images/shot-pro.jpg` / `shot-free.jpg` / `shot-paywall.jpg` |
+| 小型宣传图块 | 440x280，**可选**但建议传 | `5b75f644/store-images/tile-small.jpg` |
+| 顶部宣传图块 | 1400x560，可选（用于商店横幅位） | `5b75f644/store-images/tile-top.jpg` |
+| 图标 | 已在包内，表单无需单独上传 | — |
+| 隐私政策 URL | 公开可访问、无登录墙 | `https://wd9337812.github.io/tabtasks/PRIVACY.html`（需先开 GitHub Pages，见 §2） |
+| 支持页面 URL | 建议填 | `https://wd9337812.github.io/tabtasks/SUPPORT.html` |
 
-> ⚠️ 注意：这个 $5 是 Google 收的，跟 Stripe/Cloudflare 无关，全行业就这一笔固定成本。
+> ⚠️ 之前"previews/ 里 380x780 可用"的说法是错的，商店只收 1280x800 / 640x400 两种，
+> 这就是"图片尺寸不正确"报错的原因。现在 store-images/ 里这批全部合规。
 
 ---
 
-## 2. 隐私政策 URL（已备好 ✅）
+## 1. 注册开发者账号（一次性 $5）
 
-- **页面已写好**：`docs/PRIVACY.html`（中英双语，如实声明"数据仅本地存储、不收集"）
-- **只差开启 GitHub Pages（30 秒，3 次点击）**：
-  打开 https://github.com/wd9337812/tabtasks/settings/pages →
-  Source 选 **Deploy from a branch** → Branch 选 **main**、文件夹选 **/docs** → Save
-- 约 1 分钟后生效，商店里填这个 URL：
+chrome.google.com/webstore/devconsole → 登录 → 付 $5 → 同意协议。
+$5 是 Google 收的，与 Stripe/Cloudflare 无关。
+
+---
+
+## 2. 开启 GitHub Pages（30 秒，只做一次）
+
+https://github.com/wd9337812/tabtasks/settings/pages →
+Source 选 **Deploy from a branch** → 分支 **main** + 文件夹 **/docs** → Save。
+约 1 分钟后打开下面两个 URL 能看到页面即成功（隐私政策、支持页都依赖它）：
 
 ```
 https://wd9337812.github.io/tabtasks/PRIVACY.html
+https://wd9337812.github.io/tabtasks/SUPPORT.html
 ```
-
-- 验证：浏览器打开上面链接能看到页面即成功（首次可能慢几十秒）。
 
 ---
 
-## 3. 商店文案（已按搜索关键词优化，直接复制）
+## 3. 后台标签页 ①「软件包」
 
-**名称（≤75 字符）**
+上传 `tabtasks-extension-store.zip`。manifest 的 description 已缩到 115 字符（上限 132），
+上传后此页应无红字。有红字就截图发我。
+
+---
+
+## 4. 后台标签页 ②「商店信息」
+
+**名称（≤128 字符）**
 
 ```
 TabTasks: Sidebar To-Do & Page Collector
 ```
 
-**简短描述（≤132 字符）**
+**简短说明（≤132 字符）**
 
 ```
 Turn any web page into a to-do in one click. A lightweight sidebar task collector with lists, due dates & local storage.
 ```
 
-**详细描述（要点已埋入搜索词：sidebar to-do / task manager / read later / capture page）**
+**详细描述**（官方建议：首句直给、要点列表、不堆关键词、不蹭别家品牌词）
 
 ```
 TabTasks puts a to-do list in your browser's side panel — next to the pages you're actually reading.
 
 ONE-CLICK PAGE CAPTURE
-Browsing something you need to act on later? Click "Capture current page" (or press Alt+Shift+T) and TabTasks saves the page title + link as a task. No more losing tabs you meant to deal with.
+Browsing something you need to act on later? Click "Collect current page" (or press Alt+Shift+T) and TabTasks saves the page title + link as a task. No more losing tabs you meant to deal with.
 
 MADE FOR FOCUS
 • Side panel — your tasks live beside your work, not in another tab
@@ -86,74 +86,139 @@ PRO (one-time, lifetime license)
 • Auto-extract a page summary when capturing
 • Export / import backup
 
-Privacy: TabTasks stores all data locally via chrome.storage. No servers, no analytics, no personal data collection.
+Privacy: all data is stored locally via chrome.storage. The extension itself runs no servers, no analytics and collects no personal data. Purchasing the optional Pro license is handled entirely on Stripe's hosted checkout.
 
-Questions? Reach us via the website link below.
+Support: https://wd9337812.github.io/tabtasks/SUPPORT.html
 ```
 
-**类别**：Productivity（生产力）　**语言**：简体中文 + English（界面是中文，两处都填上更稳）
+**其余字段**
+- 类别：**Productivity / 生产力**
+- 语言：默认 English；界面含中文，可点"添加语言"再传一份中文文案（不强制）
+- 屏幕截图：传 store-images/ 三张（建议顺序 paywall → pro → free，付费转化位放第一）
+- 宣传图块：tile-small.jpg、tile-top.jpg（可选，建议都传）
+- 其他字段：首页网址 `https://wd9337812.github.io/tabtasks/`；
+  支持信息页面网址 `https://wd9337812.github.io/tabtasks/SUPPORT.html`；
+  成人内容：关
+- 可见性：**公开**（或先"不公开"拿链接自测，测完再切公开）
 
 ---
 
-## 4. 后台逐项填写（New Item → Upload）
+## 5. 后台标签页 ③「隐私」——本次报错的重灾区，逐格照抄
 
-1. devconsole → **New item** → 上传 `tabtasks-extension-store.zip`
-2. **Store listing** 标签页：
-   - 名称/简述/详述 → 粘贴 §3 文案
-   - 上传 5 张以内截图（用 previews/ 三张）+ 1 张图标（icons/icon-128.png）
-   - 支持网站 → 填你的 GitHub 仓库地址（或以后换成官网）
-   - **Store listing 全语言填完后，把 Visibility 选 Public**
-3. **Permission** 标签页：系统会从 manifest 自动读出
-   `storage / activeTab / scripting / sidePanel / tabs` + `<all_urls>`。
-   商店要求为每个权限写理由（Justification），照抄：
-   - *Read your browsing history / tabs*：用于定位当前标签页以便一键收集为任务
-   - *Insert or remove content / run scripts*：用于抓取当前页标题与所选文字生成任务内容
-   - *Display notifications（如有）*：未使用
-4. **Privacy** 标签页：
-   - Single purpose（单一用途声明）：
-     `Capture web pages as tasks and manage a local to-do list in the browser side panel.`
-   - Data access：勾选 **不用于远端传输、不共享**（数据全在本地）
-   - Limited use 无需勾选（我们没有收集行为）
-   - 填入 §2 准备好的隐私政策 URL
-5. 定价：**Free**（Pro 走自己网站收款，见 §6 合规说明）
-6. 全部保存 → 状态切到 **Submit for review**
+### 5.1 单一用途声明
+
+```
+Capture the page the user is viewing as a to-do task and manage local task lists in the browser side panel.
+```
+
+### 5.2 需请求权限的理由（每个权限一格，英文，勿中英混排）
+
+> 官方要求：逐条说明"这个权限对应哪个具体功能"。写错格子（把 tabs 的理由填进
+> storage）会被视为披露不实 → 拒审。以下六格一一对应，直接复制。
+
+**storage**
+
+```
+chrome.storage.local is the extension's only persistence layer: it saves the user's task lists, note text, due dates, tags and a pasted License Key on the device so tasks survive browser restarts. Nothing stored is ever transmitted off the device.
+```
+
+**activeTab**
+
+```
+Grants one-time access to the tab that is active at the moment the user clicks the toolbar icon or presses Alt+Shift+T. This is how "collect current page" knows which page to capture. Access only happens on that explicit user gesture.
+```
+
+**scripting**
+
+```
+After the user gesture above, chrome.scripting.executeScript runs one small read-only function in the active tab that returns the page's title and URL (plus an optional text excerpt for Pro users) so the captured task shows where it came from. The script never modifies the page and never reads forms, cookies or credentials.
+```
+
+**sidePanel**
+
+```
+The sidebar opened via chrome.sidePanel is the extension's entire UI — where the user views, completes and organizes tasks. Without it there is nowhere to show the to-do list.
+```
+
+**tabs**
+
+```
+Reads the active tab's title and URL to build each captured task, and listens for tab updates so the sidebar reflects the page the user is on. The extension does not read browsing history and does not enumerate or track other tabs.
+```
+
+**主机权限（<all_urls>）**
+
+```
+Capture must work on whatever page the user is reading, so the read-only extraction described under "scripting" needs host access for any site. It is invoked only in the single active tab, only after the user's explicit click or keyboard shortcut, and returns only title/URL/optional excerpt. Nothing runs automatically, no requests are observed or modified, and no page data is sent to any server — the extension has no backend for user content.
+```
+
+### 5.3 远程代码
+
+选 **「不，我并未使用远程代码」**。
+
+事实依据：所有 JS（background/sidepanel/license/config.js）都打在包里；
+License 校验是本地 HMAC 计算，不下载、不执行任何外部脚本。
+购买时打开的 Cloudflare Worker / Stripe 页面是普通网页跳转，不属于扩展内执行远程代码。
+⚠️ 这一项若误选"是"，必须提供技术理由且大概率被拒——我们没有任何远程代码，如实选"不"。
+
+### 5.4 数据使用（收集声明）
+
+TabTasks 所有处理都在本机完成，扩展不向开发者服务器或第三方传输任何用户数据
+（购买流程发生在 Stripe 托管页，由 Stripe 处理，扩展本身不经手）。因此：
+
+- 上面的数据类型清单（个人身份/财务/网络记录/网站内容…）：**全部不勾**
+- 勾选列表末尾的 **「我的扩展程序不会收集任何用户数据」**（如有此选项）
+- 「我确认下列披露信息均属实」三条：**全部勾上**（这是政策硬性要求）
+
+> 若表单不允许勾"不收集"（个别账号 AB 测试），只勾「网站内容」并说明
+> "captured page title/URL, stored locally only, never transmitted"——但大概率用不到。
+
+### 5.5 隐私权政策网址
+
+```
+https://wd9337812.github.io/tabtasks/PRIVACY.html
+```
+
+必须已按 §2 开启 Pages 且能公开打开。商店会核对政策内容与你的声明是否一致，
+我们的 PRIVACY.html 已如实写明"仅本地存储、扩展不收集、Stripe 处理支付"。
 
 ---
 
-## 5. 审核与发布后
+## 6. 后台标签页 ④「分发」
 
-- 提交后状态 *Pending* → *Live*（首次 1~5 天常见）
-- 上架前**先别在扩展里点「购买 Pro」**测试——商店版 config.js 里 Stripe 链接要已配置好
-- 拿到链接：`https://chromewebstore.google.com/detail/<slug>/<id>`
-- 建议立刻做：
-  1. 把链接挂到 GitHub README 顶部
-  2. 发 Product Hunt / V2EX / 即刻 / X 拉首批评价（前 10 条评论决定搜索转化）
-  3. 后台盯 Statistics 的 *Installed / Uninstalled*，卸载率高先查权限理由文案
+- 类别：生产力（与 §4 一致）
+- 地区：**所有国家/地区**（Stripe 全球收款，无需限制）
+- 定价：**免费**
+- 语言：默认英语
 
----
-
-## 6. 合规提醒（重要，避免下架）
-
-1. **收款走外链是主流做法**（Grammarly、Loom 均如此）：商店内免费 + 官网 Stripe 卖
-   License Key，**不要**在商店描述里放价格促销词，只放"Pro 功能说明 + 官网链接"。
-2. 描述里**不要**蹭别家品牌词（"2-b.ai alternative"这种放自己博客，别放商店文案）。
-3. 权限最小化原则：我们用了 `<all_urls>`（为任意网页捕获），Justification 必须如实、
-   具体，这是机审+人审最容易卡的点。
-4. 更新版本 = 后台上传新 zip + 版本号 +0.0.1，重新提交审核。
+> 合规：商店内免费 + 扩展内链到自家 Stripe 卖 License 是主流做法（Grammarly、Loom 同款）。
+> 商店文案里不要出现促销性价格词堆砌，我们的详述只陈述功能与一次性授权事实，合规。
 
 ---
 
-## 7. 自然流量优化（上架后慢慢做）
+## 7. 提交与审核后
 
-- 名称/描述每半年根据商店搜索词微调一次（工具：Rankify、Extension Manager 查关键词）
-- 核心词：`to-do sidebar`、`capture page`、`read later`、`task manager`、`bookmark organizer`
-- 尽快积累 15+ 条五星评价（搜索排序权重最大项之一）
-- 做一张 16:9 宣传视频截帧放商店（可用本扩展录屏演示，免费工具 Screen Studio 平替：OBS）
+1. 右上角「保存草稿」→ 无红字后「提请审核」
+2. 状态 Pending → Live（首次 1~5 天；含 <all_urls> 可能更久）
+3. 通过后拿到 `https://chromewebstore.google.com/detail/<slug>/<id>`，发我，我把落地页 "Add to Chrome" 按钮换上
+4. 立刻做：README 挂链接 → Product Hunt / V2EX / X 拉首批用户评价（前 10 条评论决定搜索转化）
+
+---
+
+## 8. 常见拒审原因自查（官方口径 + 社区统计）
+
+| 拒审原因 | 我们的状态 |
+|----------|-----------|
+| 权限理由为空/含糊/与功能对不上 | §5.2 六格逐一对应，具体到触发时机 |
+| 请求超出单一用途的权限 | 六项权限全部服务于"捕获当前页为任务" |
+| 披露与隐私政策矛盾 | 政策页、数据声明、代码行为三者一致（全本地） |
+| 执行远程代码未申报 | 无远程代码，如实申报"不" |
+| 截图尺寸不符 | store-images/ 全部 1280x800 JPEG 无 alpha |
+| 蹭品牌词/关键词堆砌 | 文案无竞品名、无重复堆词 |
+| 功能过于单薄 | 列表/标签/到期日/导出/门控完整 |
 
 ---
 
 ### 卡住了怎么办
 
-按顺序检查：zip 是否用了 `tabtasks-extension-store.zip`（不是 repo zip）→ 权限理由是否为空
-→ 隐私政策 URL 是否可公开访问 → 商店文案是否含"buy/购买/价格"等促销词。
-仍报错就把后台红字截图发给我。
+后台任何红字/黄条，原样截图发我。改文案不用重新传包，保存草稿再提审即可。
