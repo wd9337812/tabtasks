@@ -16,7 +16,7 @@
 | 屏幕截图 | **必须 1280x800 或 640x400**，JPEG 或 24 位 PNG（无 alpha），1~5 张 | `5b75f644/store-images/shot-pro.jpg` / `shot-free.jpg` / `shot-paywall.jpg` |
 | 小型宣传图块 | 440x280，**可选**但建议传 | `5b75f644/store-images/tile-small.jpg` |
 | 顶部宣传图块 | 1400x560，可选（用于商店横幅位） | `5b75f644/store-images/tile-top.jpg` |
-| 图标 | 已在包内，表单无需单独上传 | — |
+| **商店图标（必填）** | **正好 128x128 的 PNG**。⚠️ 包内 `icons/` 不等于表单：「图片资源」屏要单独上传一张，传错尺寸会报「错误：图片尺寸不正确」 | `5b75f644/store-images/store-icon-128.png`（无 alpha 兜底：`store-icon-128-rgb.png`） |
 | 隐私政策 URL | 公开可访问、无登录墙 | `https://wd9337812.github.io/tabtasks/PRIVACY.html`（需先开 GitHub Pages，见 §2） |
 | 支持页面 URL | 建议填 | `https://wd9337812.github.io/tabtasks/SUPPORT.html` |
 
