@@ -49,6 +49,16 @@ card details are handled entirely by Stripe and never reach us. To activate a Pr
 license, the extension verifies a license key locally in your browser. We do not
 receive usage telemetry from the extension.</p>
 
+<p><strong>Optional AI assistant (bring your own key).</strong><br>
+The AI assistant is <em>off by default</em> and never contacts any server unless you
+enable it and paste your own OpenAI API key into the extension. When you use it, the
+text you choose to send (your task list snapshot plus your instruction) goes directly
+from your browser to <code>api.openai.com</code> under your key, and OpenAI's own
+privacy terms apply to that request. The key is stored only in your local
+<code>chrome.storage</code>, is never sent to us, and can be removed at any time from
+the settings drawer. Right-click selection capture and .ics calendar export are fully
+local and involve no network access.</p>
+
 <p><strong>Privacy policy for the Chrome Web Store listing:</strong> this extension
 practices Limited Use? No — it practices <em>no use</em>: no data leaves the device.</p>
 
@@ -75,6 +85,13 @@ https://github.com/wd9337812/tabtasks or email the developer via the GitHub prof
 <p><strong>许可与支付。</strong><br>
 Pro 买断由 Stripe 在其结账页处理，银行卡信息完全由 Stripe 管理，不经过我们。
 激活时扩展在你的浏览器本地校验 License Key。我们不接收任何使用遥测。</p>
+
+<p><strong>可选 AI 助手（自带 Key）。</strong><br>
+AI 助手<em>默认关闭</em>：除非你主动开启并粘贴自己的 OpenAI API Key，扩展不会联系
+任何服务器。使用时，你选择发送的内容（任务快照 + 你的指令）由你的浏览器直连
+<code>api.openai.com</code>，该请求受 OpenAI 自身隐私条款约束。Key 仅存于本机
+<code>chrome.storage</code>，不会发给我们，可随时在设置抽屉中删除。
+右键选区捕获与 .ics 日程导出完全在本地完成，不产生任何网络请求。</p>
 
 <p><strong>联系方式：</strong>https://github.com/wd9337812/tabtasks 提交 Issue，
 或通过 GitHub 主页邮箱联系开发者。</p>

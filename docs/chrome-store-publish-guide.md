@@ -78,6 +78,9 @@ MADE FOR FOCUS
 • Side panel — your tasks live beside your work, not in another tab
 • Lists & due dates — organize captures into Inbox / Today / Reading
 • Quick add — type a task, hit Enter, done
+• Notes & one-level subtasks — break a capture into steps without leaving the panel
+• Right-click any selected text → "Collect selection as task"; the selection is kept as the task note
+• Export due dates as an .ics file and open it in Google / Outlook / Apple Calendar
 • 100% local — everything stays in your browser, zero accounts, zero tracking
 
 PRO (one-time, lifetime license)
@@ -85,8 +88,9 @@ PRO (one-time, lifetime license)
 • Tags for cross-list topics
 • Auto-extract a page summary when capturing
 • Export / import backup
+• AI assistant, bring your own OpenAI key: describe changes in plain language, preview the proposed edits, apply them with one click
 
-Privacy: all data is stored locally via chrome.storage. The extension itself runs no servers, no analytics and collects no personal data. Purchasing the optional Pro license is handled entirely on Stripe's hosted checkout.
+Privacy: all data is stored locally via chrome.storage. The extension itself runs no servers, no analytics and collects no personal data. The optional AI assistant is off by default; if you enable it with your own OpenAI API key, only the text you choose to send goes to api.openai.com under your key. Purchasing the optional Pro license is handled entirely on Stripe's hosted checkout.
 
 Support: https://wd9337812.github.io/tabtasks/SUPPORT.html
 ```
@@ -114,12 +118,14 @@ Capture the page the user is viewing as a to-do task and manage local task lists
 ### 5.2 需请求权限的理由（每个权限一格，英文，勿中英混排）
 
 > 官方要求：逐条说明"这个权限对应哪个具体功能"。写错格子（把 tabs 的理由填进
-> storage）会被视为披露不实 → 拒审。以下五格一一对应，直接复制。
+> storage）会被视为披露不实 → 拒审。以下六格一一对应，直接复制；
+> 若表单额外出现「可选主机权限」格（来自 optional_permissions 的 api.openai.com），
+> 再补最后那一格。
 
 **storage**
 
 ```
-chrome.storage.local is the extension's only persistence layer: it saves the user's task lists, note text, due dates, tags and a pasted License Key on the device so tasks survive browser restarts. Nothing stored is ever transmitted off the device.
+chrome.storage.local is the extension's only persistence layer: it saves the user's task lists, note text, subtasks, due dates, tags and a pasted License Key on the device so tasks survive browser restarts. Nothing stored is ever transmitted off the device.
 ```
 
 **activeTab**
@@ -144,6 +150,18 @@ The sidebar opened via chrome.sidePanel is the extension's entire UI — where t
 
 ```
 Reads the active tab's title and URL to build each captured task (a task is just title + link, so no page access is needed for the core flow), and listens for tab updates so the sidebar badge stays accurate. The extension does not read browsing history and does not enumerate or track other tabs.
+```
+
+**contextMenus**
+
+```
+Adds a single right-click entry, "Collect selection as task", shown only when the user selects text on a page. Choosing it saves the selected text as the note of a new task in the side panel. No other menu items are added and the permission is not used for anything else.
+```
+
+**可选主机权限 https://api.openai.com/*（仅当表单出现该格时填）**
+
+```
+Declared as an optional host permission and requested at runtime only when a Pro user turns on the optional AI assistant and pastes their own OpenAI API key. It allows the extension to send the user's own task text to the OpenAI chat completions endpoint and receive proposed edits, which are shown as a preview and applied only after an explicit click. Without the user's key the permission is never requested and no network call is made.
 ```
 
 > v0.2.0 起已按 Google 官方建议**移除 `<all_urls>` 主机权限**，改用 activeTab：
@@ -172,6 +190,10 @@ TabTasks 所有处理都在本机完成，扩展不向开发者服务器或第�
 
 > 若表单不允许勾"不收集"（个别账号 AB 测试），只勾「网站内容」并说明
 > "captured page title/URL, stored locally only, never transmitted"——但大概率用不到。
+
+> AI 助手不影响上面的勾法：它是**用户主动开启 + 用户自己的 Key**，扩展开发者
+> 不经手、不存储任何请求内容，因此仍属"开发者不收集数据"。若审核员追问，
+> 用 §5.2 最后那格可选主机权限的理由原文回复即可。
 
 ### 5.5 隐私权政策网址
 
@@ -210,7 +232,7 @@ https://wd9337812.github.io/tabtasks/PRIVACY.html
 | 拒审原因 | 我们的状态 |
 |----------|-----------|
 | 权限理由为空/含糊/与功能对不上 | §5.2 五格逐一对应，具体到触发时机 |
-| 请求超出单一用途的权限 | 五项权限全部服务于"捕获当前页为任务"，已去掉 <all_urls> |
+| 请求超出单一用途的权限 | 六项权限全部服务于"捕获当前页为任务/管理本地任务"，已去掉 <all_urls>；openai 主机仅为可选权限 |
 | 披露与隐私政策矛盾 | 政策页、数据声明、代码行为三者一致（全本地） |
 | 执行远程代码未申报 | 无远程代码，如实申报"不" |
 | 截图尺寸不符 | store-images/ 全部 1280x800 JPEG 无 alpha |

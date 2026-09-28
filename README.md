@@ -22,6 +22,7 @@
 3. 点 **加载已解压的扩展程序** → 选择本 `side-task-collector/` 目录
 4. 工具栏点扩展图标 → 侧边栏打开；在任意网页点 **「＋ 收集当前页面」**
 5. 快捷键 `Alt+Shift+T` 也可把当前页快速收进侧边栏
+6. 在网页里**选中一段文字 → 右键 → 「收集选区为 TabTasks 任务」**，选区会作为任务备注一起存下
 
 ---
 
@@ -36,6 +37,10 @@
 | 任务标签 | 🔒 | ✅ |
 | 抓取页面正文摘要 | 🔒 | ✅ |
 | 导出 / 导入备份 | 🔒 | ✅ |
+| 任务备注编辑、一级子任务 | ✅ | ✅ |
+| 右键选区 → 收集为任务（选区进备注） | ✅ | ✅ |
+| 到期任务导出 `.ics`（导入任意日历） | ✅ | ✅ |
+| AI 助手：自然语言增删改任务（自带 OpenAI Key，预览后一键应用） | 🔒 | ✅ |
 
 阈值都写在 [`config.js`](config.js) 的 `CONFIG.FREE / PRO`，一行就能调。
 
@@ -52,9 +57,13 @@ FREE: {
   maxLists: 2,          // ← 免费列表数上限
   tags: false,          // ← 标签是否免费可用（建议保持 false）
   excerpt: false,       // ← 页面正文摘要是否免费
-  export: false         // ← 导出备份是否免费
+  export: false,        // ← 导出/导入备份是否免费
+  ai: false             // ← AI 助手（自带 Key）是否免费（建议保持 false）
 },
 ```
+
+子任务、备注、右键选区捕获、`.ics` 导出对免费用户开放（它们是"收集"主流程的
+自然延伸，不构成付费墙）；AI 助手因为要用户自填 OpenAI Key，放在 Pro 档做增值。
 
 调参建议（跑自然流量转化的经验值）：上限卡在「轻度用户够用、重度用户心疼」，
 先 30/2 上线，一周后看用户反馈再收紧或放宽；改完记得同步商店描述里的 Free/Pro 对比。
@@ -145,6 +154,9 @@ node tools/keygen.mjs --secret "<SECRET>" --days 365 --label x@y.com  # 任意�
 
 `worker/index.js` 的 `computeKey` 与 `tools/keygen.mjs`、`license.js` 三端算法一致，
 迁移时签发逻辑可直接复用。
+
+AI 助手（Pro，自带 Key）隐私边界：OpenAI Key 只存在本机 `chrome.storage.local`，
+请求只发往 `api.openai.com` 且仅在用户点发送时发生；不填 Key 则功能完全离线不存在。
 
 ---
 
