@@ -8,15 +8,17 @@
 - Category: Productivity / to-do & task management
 - Price: free (30 tasks, 2 lists), Pro is a one-time $6 lifetime license
 - Chrome Web Store: coming soon (pending review)
-- Privacy: 100% local, `chrome.storage` only; no server, no account, no analytics,
+- Privacy: task/session storage is local in `chrome.storage`; no developer content server, no account, no analytics,
   no cookies; the optional AI assistant is bring-your-own-key and talks directly to the
-  provider you configure — nothing is proxied through us.
+  OpenAI API — nothing is proxied through us.
 - Features: one-click capture of the current tab (title + URL) into a list, quick-add,
   due dates, notes and first-level subtasks, complete / clear-completed, right-click any
   page selection to save that snippet as a task note, .ics export of due tasks,
   tags and page-content summary (Pro), JSON backup export / import (Pro),
   AI assistant that edits tasks from natural language using your own API key with a
-  preview-before-apply step (Pro), built-in English / Chinese UI.
+  preview-before-apply step (Pro), Chinese task interface.
 - Free tier: 30 active tasks and 2 lists; Pro removes both limits.
 - Support: https://wd9337812.github.io/tabtasks/SUPPORT.html
 - Privacy policy: https://wd9337812.github.io/tabtasks/PRIVACY.html
+
+Optional AI sends task titles, IDs, due dates, completion state, tags and the user instruction directly to OpenAI on explicit Send; it requires a user API key and optional api.openai.com host access.

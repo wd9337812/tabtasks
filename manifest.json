@@ -1,11 +1,17 @@
 {
   "manifest_version": 3,
   "name": "TabTasks — Sidebar To-Do & Page Collector",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Turn any web page into a to-do in one click. A lightweight sidebar task collector with lists, due dates, all local.",
   "author": "you",
-  "permissions": ["storage", "activeTab", "scripting", "sidePanel", "tabs", "contextMenus"],
-  "optional_permissions": ["https://api.openai.com/*"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "tabs",
+    "contextMenus"
+  ],
   "action": {
     "default_title": "Open TabTasks sidebar",
     "default_icon": {
@@ -27,8 +33,14 @@
   },
   "commands": {
     "capture-page": {
-      "suggested_key": { "default": "Alt+Shift+T" },
+      "suggested_key": {
+        "default": "Alt+Shift+T"
+      },
       "description": "Capture the current page as a task"
     }
-  }
+  },
+  "minimum_chrome_version": "116",
+  "optional_host_permissions": [
+    "https://api.openai.com/*"
+  ]
 }

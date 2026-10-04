@@ -15,44 +15,44 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid #e5e7eb;color:#8b93
 </head>
 <body>
 <h1>TabTasks — Privacy Policy</h1>
-<p style="color:#8b93a7">Effective date 生效日期: 2026-09-26</p>
+<p style="color:#8b93a7">Effective date 生效日期: 2026-10-04</p>
 <div>
   <span class="badge">No accounts 无需账号</span>
   <span class="badge">Local storage only 仅本地存储</span>
   <span class="badge">No analytics 无统计追踪</span>
-  <span class="badge">No data collection 不收集数据</span>
+  <span class="badge">Optional AI 可选 AI</span>
 </div>
 
 <h2>English</h2>
 <div class="en">
 <p><strong>TabTasks</strong> is a browser side-panel to-do &amp; page-capture extension.
-We want to be crystal clear: <strong>we do not collect, transmit, sell, or share any
-personal data.</strong></p>
+<strong>We do not sell your data or upload task content to developer servers.</strong>
+Only an explicit AI request sends the task snapshot described below directly to OpenAI.</p>
 
 <p><strong>What data exists, and where does it live?</strong><br>
 Everything you create in TabTasks — task titles, page links you capture, page text
 excerpts you choose to save, list names, tags, and due dates — is stored <em>only</em>
-in your own browser via the <code>chrome.storage</code> API. It never leaves your
-device. Uninstalling the extension (or clearing your browser data) deletes it
-permanently. We have no server that holds user data, because there is no user data
-to hold.</p>
+in your own browser via the <code>chrome.storage</code> API. Optional AI and exports
+process selected data as described below. Uninstalling the extension (or explicitly
+clearing extension storage) deletes your local data. We have no server that stores task content.</p>
 
 <p><strong>Why does the extension request broad permissions?</strong><br>
 TabTasks reads the title and URL of the page you are actively viewing, and (if you
-are a Pro user) a short text excerpt, <em>only at the moment you click “Capture”</em>.
-That information is written to your local storage. It is not sent anywhere, not
-logged, and not retained in any temporary server memory.</p>
+are a Pro user) a short text excerpt, <em>only when you request capture through a button, shortcut or selection menu</em>.
+That information is written to local storage. Capture itself does not send task content
+to a server; a later explicit AI request sends only the snapshot described below.</p>
 
 <p><strong>Licensing &amp; payments.</strong><br>
 Pro purchases are processed by Stripe (stripe.com) on their checkout pages; payment
 card details are handled entirely by Stripe and never reach us. To activate a Pro
-license, the extension verifies a license key locally in your browser. We do not
+license, the extension verifies a license key locally in your browser. The purchase
+success page uses a developer-operated Worker to verify the Stripe order and issue a key. We do not
 receive usage telemetry from the extension.</p>
 
 <p><strong>Optional AI assistant (bring your own key).</strong><br>
 The AI assistant is <em>off by default</em> and never contacts any server unless you
 enable it and paste your own OpenAI API key into the extension. When you use it, the
-text you choose to send (your task list snapshot plus your instruction) goes directly
+task titles, IDs, due dates, completion state and tags, plus your instruction goes directly
 from your browser to <code>api.openai.com</code> under your key, and OpenAI's own
 privacy terms apply to that request. The key is stored only in your local
 <code>chrome.storage</code>, is never sent to us, and can be removed at any time from
@@ -60,7 +60,7 @@ the settings drawer. Right-click selection capture and .ics calendar export are 
 local and involve no network access.</p>
 
 <p><strong>Privacy policy for the Chrome Web Store listing:</strong> this extension
-practices Limited Use? No — it practices <em>no use</em>: no data leaves the device.</p>
+stores tasks locally. Optional AI transmits task titles, IDs, due dates, completion state, tags and your instruction to OpenAI; notes, page URLs and page excerpts are not included in the AI snapshot. The optional host permission applies only to api.openai.com. API usage may incur charges under your OpenAI account.</p>
 
 <p><strong>Contact:</strong> open an issue at
 https://github.com/wd9337812/tabtasks or email the developer via the GitHub profile.</p>
@@ -69,27 +69,28 @@ https://github.com/wd9337812/tabtasks or email the developer via the GitHub prof
 <h2>中文</h2>
 <div class="zh">
 <p><strong>TabTasks</strong> 是一款浏览器侧边栏待办与网页收集扩展。我们声明：
-<strong>本扩展不收集、不传输、不出售、不共享任何个人数据。</strong></p>
+<strong>本扩展不出售用户数据，不向开发者服务器上传任务内容。仅在你点击 AI 发送时，将下述任务快照和指令直连发送给 OpenAI。</strong></p>
 
 <p><strong>数据存在哪里？</strong><br>
 你在 TabTasks 中创建的一切内容——任务标题、收集的网页链接、保存的正文摘要、
 列表名称、标签与到期日——<em>仅</em>通过 <code>chrome.storage</code> 存储在你自己的
-浏览器本地，永不离开你的设备。卸载扩展（或清除浏览器数据）即永久删除。
-我们没有存放用户数据的服务器，因为根本没有可存放的用户数据。</p>
+浏览器本地；仅在你主动使用 AI 助手或导出备份时按相应功能处理。卸载扩展（或明确清除扩展存储）即永久删除。
+我们没有存放任务内容的服务器。</p>
 
 <p><strong>为什么申请较宽的权限？</strong><br>
-仅在你点击「收集当前页面」的那一刻，扩展会读取当前页面的标题、网址，
-（Pro 用户）以及一小段正文摘要，并写入你的本地存储。这些信息不会被发送到任何
-地方，不会被记录，也不会在任何服务器中留存。</p>
+仅在你主动点击收集、使用快捷键或右键选区时，扩展会读取当前页面的标题、网址，
+（Pro 用户）以及一小段正文摘要，并写入你的本地存储。收集动作本身不向服务器发送任务内容；
+之后主动使用 AI 时，仅发送下文说明的快照。</p>
 
 <p><strong>许可与支付。</strong><br>
 Pro 买断由 Stripe 在其结账页处理，银行卡信息完全由 Stripe 管理，不经过我们。
+付款成功页通过开发者运营的 Worker 向 Stripe 核对订单并签发 Key。
 激活时扩展在你的浏览器本地校验 License Key。我们不接收任何使用遥测。</p>
 
 <p><strong>可选 AI 助手（自带 Key）。</strong><br>
 AI 助手<em>默认关闭</em>：除非你主动开启并粘贴自己的 OpenAI API Key，扩展不会联系
-任何服务器。使用时，你选择发送的内容（任务快照 + 你的指令）由你的浏览器直连
-<code>api.openai.com</code>，该请求受 OpenAI 自身隐私条款约束。Key 仅存于本机
+任何服务器。使用时，任务标题、ID、到期日、完成状态、标签及你的指令（不包含任务备注、网页链接和正文摘要）由你的浏览器直连
+<code>api.openai.com</code>，该请求受 OpenAI 自身隐私条款约束。API 调用可能产生你自己的 OpenAI 账户费用；联网权限仅限 api.openai.com。Key 仅存于本机
 <code>chrome.storage</code>，不会发给我们，可随时在设置抽屉中删除。
 右键选区捕获与 .ics 日程导出完全在本地完成，不产生任何网络请求。</p>
 
@@ -98,9 +99,9 @@ AI 助手<em>默认关闭</em>：除非你主动开启并粘贴自己的 OpenAI 
 </div>
 
 <footer>
-This page is part of the TabTasks open-source repository
+This page is part of the TabTasks public source repository
 (<a href="https://github.com/wd9337812/tabtasks">github.com/wd9337812/tabtasks</a>).<br>
-本页面属于 TabTasks 开源仓库，可直接用作 Chrome 应用商店的隐私政策链接。
+本页面属于 TabTasks 代码仓库，可直接用作 Chrome 应用商店的隐私政策链接。
 </footer>
 </body>
 </html>

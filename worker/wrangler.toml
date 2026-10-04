@@ -9,6 +9,7 @@ main = "index.js"
 compatibility_date = "2026-09-01"
 
 [vars]
+ALLOW_TEST_PAYMENTS = "false"
 # 你的 Stripe Payment Link（付款链接本身可公开，密钥在成功页才派生）
 STRIPE_PAYMENT_LINK = "https://buy.stripe.com/fZu8wOapx9qc4z27FNbwk00"
 
