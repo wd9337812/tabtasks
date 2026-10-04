@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TabTasks — Sidebar To-Do & Page Collector",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Turn any web page into a to-do in one click. A lightweight sidebar task collector with lists, due dates, all local.",
   "author": "you",
   "permissions": [
@@ -16,12 +16,14 @@
     "default_title": "Open TabTasks sidebar",
     "default_icon": {
       "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
       "48": "icons/icon-48.png",
       "128": "icons/icon-128.png"
     }
   },
   "icons": {
     "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },

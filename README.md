@@ -1,6 +1,6 @@
 # TabTasks
 
-Chrome 侧边栏扩展，当前版本 0.3.1；需要 Chrome 116 或更新版本。
+Chrome 侧边栏扩展，当前版本 0.4.0；需要 Chrome 116 或更新版本。
 
 将网页或选区收集为任务，支持列表、备注、子任务、到期日、日历导出。免费版 30 个活动任务和 2 个列表；Pro 增加标签、可读取页面的摘要、备份导入导出，以及自带 OpenAI API Key 的可选 AI 助手。
 
@@ -8,8 +8,15 @@ Chrome 侧边栏扩展，当前版本 0.3.1；需要 Chrome 116 或更新版本�
 
 1. 在 chrome://extensions 开启开发者模式，加载本仓库目录。
 2. 工具栏点击扩展图标打开侧栏。
-3. 回归测试：node tools/regression.mjs。
-4. UI 预览仅用于浏览器直接打开 sidepanel.html?demo=pro；真实扩展会忽略 demo 参数。
+3. 回归测试：npm test。
+4. UI 构建：npm ci 后执行 npm run build；生成的 sidepanel.js / sidepanel.css 已随仓库提交，普通本地加载不需要先构建。
+5. 默认英文。顶部 EN / 中 或设置中的语言选项可切换简体中文；语言、浅色 / 深色 / 跟随系统偏好保存在本机并在多个窗口同步。
+
+## 界面与品牌
+
+React + Tailwind CSS + shadcn/ui（Base UI）+ Motion + Lucide；使用本地打包组件，符合扩展 CSP，无运行时 CDN。保留原 Manifest V3 service worker 的数据与授权结构。Motion 与样式遵循减少动态效果偏好。
+
+新版界面示例和 Logo 见 docs/assets。
 
 ## 存储与迁移
 
