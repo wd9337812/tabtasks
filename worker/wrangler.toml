@@ -1,17 +1,25 @@
-# wrangler.toml — Cloudflare Worker 部署配置
-# 部署:  npm i -D wrangler (或直接用 npx wrangler)
-#        npx wrangler secret put LIC_SECRET   # 交互输入，与扩展 config.js 的 SECRET 一致
-#        npx wrangler deploy
-# 免费版：每天 10 万次请求，本场景远用不完 => 0 成本
-
+# Billing v2: server-created Stripe Checkout + isolated D1 orders.
+# Keep LIC_SECRET / STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET / ADMIN_TOKEN in Worker secrets.
 name = "tabtasks-pro-api"
 main = "index.js"
 compatibility_date = "2026-09-01"
 
 [vars]
+PRODUCT_SLUG = "tabtasks"
+PRODUCT_NAME = "TabTasks Pro"
+PUBLIC_ORIGIN = "https://tabtasks-pro-api.wd933781.workers.dev"
+CHECKOUT_MODE = "api"
 ALLOW_TEST_PAYMENTS = "false"
-# 你的 Stripe Payment Link（付款链接本身可公开，密钥在成功页才派生）
+ENABLE_PROVISIONING = "false"
+STRIPE_PRICE_ID = "price_1UJzCtBV2lNTC4WNZO43TKhw"
+# Retained only for validating existing Payment Link orders and manual fallback.
 STRIPE_PAYMENT_LINK = "https://buy.stripe.com/fZu8wOapx9qc4z27FNbwk00"
+EXPECTED_PAYMENT_LINK_ID = "plink_1UJzDLBV2lNTC4WNYlEvmfVC"
+STRIPE_WEBHOOK_ID = "we_1UN8raBV2lNTC4WNNY8sfyQT"
+ALLOW_PROMOTION_CODES = "false"
+AUTOMATIC_TAX = "true"
 
-# LIC_SECRET 不要写在这里！用命令行注入：
-#   npx wrangler secret put LIC_SECRET
+[[d1_databases]]
+binding = "ORDERS_DB"
+database_name = "tabtasks-pro-orders"
+database_id = "cb608c26-bfac-43d9-9caa-91143cd59520"
