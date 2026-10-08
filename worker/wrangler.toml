@@ -5,6 +5,7 @@ main = "index.js"
 compatibility_date = "2026-09-01"
 
 [vars]
+EXTENSION_ID = "oloegbmgmcklmfgcmjngkjdfciblkmkp"
 PRODUCT_SLUG = "tabtasks"
 PRODUCT_NAME = "TabTasks Pro"
 PUBLIC_ORIGIN = "https://tabtasks-pro-api.wd933781.workers.dev"

@@ -1,4 +1,4 @@
-importScripts('config.js', 'license.js', 'data.js', 'i18n.js');
+importScripts('config.js', 'license.js', 'data.js', 'i18n.js', 'billing-client.js');
 const serialize = Data.queue();
 const DEFAULT_LISTS = [{ id: 'inbox', name: 'Inbox', color: '#6d5efc' }, { id: 'today', name: 'Today', color: '#f59e0b' }];
 async function readState() {
@@ -74,7 +74,8 @@ function patchTask(s, id, patch) {
 }
 async function dispatch(op, p = {}) {
   const s = await readState(); let changed = false, extra = {};
-  if (op === 'READ') changed = consumePending(s) > 0;
+  if (op.startsWith('BILLING_')) { const billing=await BillingClient.dispatch(op,p); return {ok:true,state:snapshot(await readState()),...billing}; }
+  else if (op === 'READ') changed = consumePending(s) > 0;
   else if (op === 'UI_PREFS') {
     const ui = { ...s.ui, ...Object.fromEntries(['langPref','themePref'].filter(k => Object.hasOwn(p,k)).map(k => [k,p[k]])) };
     if (!['en','zh'].includes(ui.langPref) || !['light','dark','auto'].includes(ui.themePref)) Data.fail('invalid','Invalid preference');
@@ -175,3 +176,5 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 chrome.runtime.onStartup.addListener(() => request('READ').then(async r => { await updateBadge(r.state); await updatePresentation(); }).catch(console.warn));
 chrome.storage.onChanged.addListener((changes, area) => { if (area === 'local' && (changes.tasks || changes.licenseKey)) updateBadge().catch(console.warn); });
+
+BillingClient.attach(request);

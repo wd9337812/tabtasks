@@ -1,3 +1,11 @@
+# 0.5.0 · 2026-10-08
+
+免费版支持 30 个活动任务、2 个列表、网页和选区收集、备注、子任务、到期日及日历导出。Pro 支持无限活动任务和列表、标签、可读取网页的摘要、JSON 备份及可选 AI 助手。AI 支持 OpenAI Chat Completions 与 Anthropic Messages 兼容接口，可自定义服务地址、模型和 API Key；包含 OpenAI、Anthropic、DeepSeek 预设。免费版可配置并测试连接。
+
+- 增加服务端核对的自动激活与购买恢复入口，备用授权码折叠。
+- 新增 Billing 2.1.0 和兼容原订单的增量迁移。
+- 保留原授权与旧数据；更新隐私与支持说明。
+
 # Worker Billing 2.0.0（2026-10-05）
 
 - Worker 用现有 Stripe Price 创建独立 Checkout Session，替换新购买的 Payment Link 跳转；默认英文，支持中文。

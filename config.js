@@ -13,6 +13,7 @@
 //     - 目前通过 Worker 核验订单并签发 Key，付款链接指向 Worker 的 /buy。
 
 const CONFIG = {
+  PRODUCT: 'tabtasks',
   SECRET: "CHANGE_ME__paste_a_long_random_secret_here",
 
   // Stripe 收款链接（结账页/成功页把密钥发给用户）

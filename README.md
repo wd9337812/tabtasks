@@ -1,37 +1,32 @@
 # TabTasks
 
-Chrome 侧边栏扩展，当前版本 0.4.0；需要 Chrome 116 或更新版本。
+Chrome 侧边栏扩展，版本 0.5.0，需要 Chrome 116+。默认英文，支持简体中文及浅色／深色／跟随系统。
 
-将网页或选区收集为任务，支持列表、备注、子任务、到期日、日历导出。免费版 30 个活动任务和 2 个列表；Pro 增加标签、可读取页面的摘要、备份导入导出，以及自带 OpenAI API Key 的可选 AI 助手。
+免费版支持 30 个活动任务、2 个列表、网页和选区收集、备注、子任务、到期日及日历导出。Pro 支持无限活动任务和列表、标签、可读取网页的摘要、JSON 备份及可选 AI 助手。AI 支持 OpenAI Chat Completions 与 Anthropic Messages 兼容接口，可自定义服务地址、模型和 API Key；包含 OpenAI、Anthropic、DeepSeek 预设。免费版可配置并测试连接。
 
-## 本地加载与测试
+## 购买与授权
 
-1. 在 chrome://extensions 开启开发者模式，加载本仓库目录。
-2. 工具栏点击扩展图标打开侧栏。
-3. 回归测试：npm test。
-4. UI 构建：npm ci 后执行 npm run build；生成的 sidepanel.js / sidepanel.css 已随仓库提交，普通本地加载不需要先构建。
-5. 默认英文。顶部 EN / 中 或设置中的语言选项可切换简体中文；语言、浅色 / 深色 / 跟随系统偏好保存在本机并在多个窗口同步。
+Pro 为 $6 一次性买断，税费以 Stripe 结账页为准。从插件内发起购买后，Worker 核对 Stripe 的商品、价格与付款状态，再通过本机保存的购买凭证自动激活。关闭付款页也可回到插件检查付款状态。购买管理提供邮箱验证码恢复及折叠的旧授权码入口。邮件恢复需要运营方配置 Resend 发件服务；已有历史订单须经管理员核对或旧成功页访问建立邮箱摘要索引。
 
-## 界面与品牌
+Pro 买断不含 AI 用量；服务商单独收费。API Key 仅存本机，不进入备份，仅发往所选服务。模型建议先预览，再由用户确认应用。兼容两种接口的服务需要按其文档填写地址和模型；不承诺所有 AI 产品都能直接接入。
 
-React + Tailwind CSS + shadcn/ui（Base UI）+ Motion + Lucide；使用本地打包组件，符合扩展 CSP，无运行时 CDN。保留原 Manifest V3 service worker 的数据与授权结构。Motion 与样式遵循减少动态效果偏好。
+## 本地加载与开发
 
-新版界面示例和 Logo 见 docs/assets。
+1. 在 chrome://extensions 开启开发者模式并加载本仓库。公开源码 config.js 使用占位签名配置，测试授权应使用本地同一配置。
+2. 点击扩展图标打开侧栏。Alt+Shift+T 收集当前网页。
+3. npm ci 后 npm run build 更新本地打包 UI；生成的 sidepanel.js / sidepanel.css 已提交。
+4. npm test 执行扩展回归、此次功能测试、付款服务与自动激活测试，需要 Node 22.13+。测试不扣款、不发送真实验证码、不调用收费 AI。
 
-## 存储与迁移
+React、Tailwind、shadcn/ui、Motion 与 Lucide 均在本地打包，无运行时 CDN。
 
-界面发送具体操作；service worker 串行读取最新数据并持久保存，所有侧栏监听存储变化。旧数据键保留。异常旧记录修改前会保留在 tt_recovery_backup_v1，导入则必须完整通过校验。不要卸载扩展来更新，以免删除已有数据。
+## 数据与升级
 
-## 发布与付款服务
+保留原存储键及旧授权结构，后台串行保存，多个侧栏同步。异常旧记录在修改前保存在本地恢复备份。旧 aiKey / aiModel 设置可读取，新设置保存后迁移为 aiConfig。请直接更新原扩展，不要卸载来升级，以免清除本地数据。
 
-- 扩展 ZIP 只包含 manifest、运行脚本、样式、页面和图标。manifest.json 放在 ZIP 根目录。
-- config.js 在公开仓库中保持占位密钥；发布包注入与现有线上服务一致的原密钥，避免老 Key 失效。不要把真实密钥提交到 GitHub。
-- Worker Billing 2.0.0：API 创建 Stripe Checkout，D1 独立订单库，签名 Webhook 核对支付。部署与后台使用说明见 [worker/DEPLOY.md](worker/DEPLOY.md)。保留原 LIC_SECRET；Stripe、Webhook 和管理员密钥仅存 Worker secrets。
-- 购买页先披露订单数据处理，确认后用本商品现有 Price 创建订单。只对正确商品、价格和已完成付款签发；旧 Payment Link 订单兼容。生产拒绝测试订单，首次配置入口已关闭。
-- 当前仍为客户端 HMAC，能读取安装包的技术用户可以取得签名密钥；设备限制和退款撤销并未实现。更强的许可方案应另行迁移到服务端私钥签发或授权记录。
+## 发布与隐私
 
-## 隐私
+扩展 ZIP 只包含运行文件，manifest 位于根目录。发布时保留现有签名配置，真实配置不提交 GitHub。Worker Billing 2.1.0 的迁移、扩展 ID 与邮件配置见 [worker/DEPLOY.md](worker/DEPLOY.md)。当前 HMAC 离线许可不提供强制撤销或设备数量控制；退款会阻止服务器重新签发，已激活的离线授权不会自动撤销。
 
-任务通常保存在本机；主动使用 AI 时，任务标题、ID、到期日、完成状态、标签和指令直连发送给 OpenAI。API Key 仅存本机；OpenAI 费用由用户自行承担。 付款由 Stripe 处理；Cloudflare 保存订单编号、金额与付款／退款状态，用于授权签发和找回，任务与标签会话不会上传到订单服务。开发者不接收使用遥测。完整隐私政策见 docs/PRIVACY.html。
+任务／会话不上传至付款服务；D1 记录订单信息及购买邮箱摘要，邮件恢复时向 Resend 提交邮箱以投递验证码。详见 [隐私政策](docs/PRIVACY.html)和[支持](docs/SUPPORT.html)。
 
-修复列表见 CHANGELOG.md。
+此次功能与验证说明见 [docs/iteration-2026-10-08.md](docs/iteration-2026-10-08.md)，历史记录见 CHANGELOG.md。

@@ -4,6 +4,9 @@ import {Plus,Search,Globe2,Clock3,CalendarDays,MoreHorizontal,CheckCheck,Chevron
 import {Checkbox} from './ui/checkbox';
 import {useWorkspace,Button,Header,Welcome,PanelSheet,Toast,Loading,Segments,Empty,Footer,Preferences,License,DataSettings,SettingsBrand,Shortcuts,domain,dateToday,download} from './shared';
 import {validateAiOps} from './ai';
+import {AiSettings} from './ai-settings';
+import {readAiConfig,requestAiPermission,requestAi} from './ai-client';
+import {UpgradePanel} from './billing-panel';
 
 function nameOf(list,t){if(!list)return t('inbox');if(list.id==='inbox'&&['收集箱','Inbox'].includes(list.name))return t('inbox');if(list.id==='today'&&['今天看','今天','Today'].includes(list.name))return t('today');return list.name}
 function sourceOf(task,t){return task.url?domain(task.url):t(task.source==='ai'?'sourceAI':task.source==='menu'?'sourceMenu':'quickNote')}
@@ -12,7 +15,7 @@ export default function TasksApp(){
  const ws=useWorkspace('tabtasks'),{t,state,caps,rpc,busy,notify}=ws;
  const [filter,setFilter]=useState('all'),[query,setQuery]=useState(''),[showSearch,setShowSearch]=useState(false),[quick,setQuick]=useState(''),[completedOpen,setCompletedOpen]=useState(false),[sheet,setSheet]=useState(null),[selected,setSelected]=useState(null);
  const panelRef=useRef(null),fileRef=useRef(null),searchRef=useRef(null);
- const settings=()=>setSheet('settings'),run=(op,payload)=>rpc(op,payload,{upgrade:settings});
+ const settings=()=>setSheet('settings'),upgrade=()=>setSheet('upgrade'),run=(op,payload)=>rpc(op,payload,{upgrade});
  useEffect(()=>{if(filter!=='all'&&filter!=='today'&&!state.lists.some(l=>l.id===filter))setFilter('all')},[state.lists,filter]);
  useEffect(()=>{if(showSearch)searchRef.current?.focus()},[showSearch]);
  useEffect(()=>{const listener=message=>{if(message.type==='TT_FEEDBACK'&&(message.windowId==null||message.windowId===ws.windowInfo.id)){ws.read();notify(message.message?t(message.message):t(message.ok?'captured':'saveFailed'))}};chrome.runtime.onMessage.addListener(listener);return()=>chrome.runtime.onMessage.removeListener(listener)},[ws.windowInfo.id,ws.read,notify,ws.lang]);
@@ -21,8 +24,8 @@ export default function TasksApp(){
  const capture=async()=>{const tab=ws.windowInfo.tabs.find(tab=>tab.active);if(!tab)return notify(t('noPage'));const result=await run('CAPTURE',{tabId:tab.id,listId:filter==='all'?'inbox':filter});if(result)notify(t(result.excerptUnavailable?'excerptUnavailable':'captured'))};
  const toggle=async task=>{if(await run('TOGGLE',{id:task.id}))notify(t(task.done?'taskReopened':'taskCompleted'))};
  const details=task=>{setSelected(task.id);setSheet('task')};
- const exportBackup=()=>{if(!caps.export)return settings();download(JSON.stringify({app:'tabtasks',v:1,lists:state.lists,tasks:state.tasks},null,2),'tabtasks-backup-'+Date.now()+'.json');notify(t('backupReady'))};
- const importBackup=()=>{if(!caps.export)return settings();fileRef.current?.click()};
+ const exportBackup=()=>{if(!caps.export)return upgrade();download(JSON.stringify({app:'tabtasks',v:1,lists:state.lists,tasks:state.tasks},null,2),'tabtasks-backup-'+Date.now()+'.json');notify(t('backupReady'))};
+ const importBackup=()=>{if(!caps.export)return upgrade();fileRef.current?.click()};
  const importFile=async file=>{if(!file)return;if(file.size>10*1024*1024)return notify(t('largeFile'));try{const data=JSON.parse(await file.text());if(data.app&&data.app!=='tabtasks')throw new Error();const result=await run('IMPORT',{data});if(result)notify(t('importTasks',{n:result.importedTasks,lists:result.importedLists}))}catch{notify(t('badFile',{app:'TabTasks'}))}finally{fileRef.current.value=''}};
  const exportCalendar=()=>{
   const due=active.filter(task=>task.due);if(!due.length)return notify(t('calendarNone'));
@@ -44,10 +47,11 @@ export default function TasksApp(){
   </motion.article>)}</AnimatePresence></div>{!visible.length&&<Empty ws={ws} search={!!query}/>}
   <Button variant="ghost" className="completed-toggle" aria-expanded={completedOpen} onClick={()=>setCompletedOpen(!completedOpen)}><CheckCheck size={14}/>{t('completed')}<span>{done.length}</span><ChevronDown size={13} className={completedOpen?'rotated':''}/></Button>
   <AnimatePresence>{completedOpen&&<motion.div className="completed-list" initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}} transition={ws.transition}>{done.map(task=><label key={task.id}><Checkbox checked onCheckedChange={()=>toggle(task)}/><span>{task.title}</span></label>)}</motion.div>}</AnimatePresence>
-  <button className="ai-invite" onClick={()=>setSheet(caps.ai?'ai':'settings')}><span className="ai-symbol"><Sparkles size={17}/></span><div><b>{t('aiInvite')}</b><span>{t('aiInviteDesc')}</span></div><ArrowRight size={16}/></button>
+  <button className="ai-invite" onClick={()=>setSheet(caps.ai?'ai':'upgrade')}><span className="ai-symbol"><Sparkles size={17}/></span><div><b>{t('aiInvite')}</b><span>{t('aiInviteDesc')}</span></div><ArrowRight size={16}/></button>
  </main><Footer ws={ws} onExport={exportBackup} onImport={importBackup}/><input id="fileImport" ref={fileRef} type="file" hidden accept=".json,application/json" onChange={e=>importFile(e.target.files?.[0])}/>{!sheet&&<Toast ws={ws}/>}
- <PanelSheet ws={ws} panelRef={panelRef} open={!!sheet} onClose={()=>setSheet(null)} title={t(sheet==='settings'?'settingsTitle':sheet==='ai'?'aiTitle':'taskDetails')} description={t(sheet==='settings'?'settingsDesc':sheet==='ai'?'aiDesc':'taskDetailsDesc')}>
-  {sheet==='settings'&&<><SettingsBrand ws={ws}/><Preferences ws={ws}/><DataSettings ws={ws} onExport={exportBackup} onImport={importBackup}><Button variant="outline" onClick={exportCalendar}><CalendarDays size={14}/>{t('exportCalendar')}</Button></DataSettings><ListSettings ws={ws} run={run}/><AiSettings ws={ws}/><License ws={ws}/><div className="settings-section"><Button className="danger-action" variant="outline" disabled={busy||!state.tasks.some(task=>task.done)} onClick={async()=>{if(confirm(t('confirmClear'))&&await run('CLEAR_DONE'))notify(t('cleared'))}}><Trash2 size={14}/>{t('clearCompleted')}</Button></div><Shortcuts ws={ws}/></>}
+ <PanelSheet ws={ws} panelRef={panelRef} open={!!sheet} onClose={()=>setSheet(null)} title={t(sheet==='upgrade'?'upgradeTitle':sheet==='settings'?'settingsTitle':sheet==='ai'?'aiTitle':'taskDetails')} description={t(sheet==='upgrade'?'upgradeDesc':sheet==='settings'?'settingsDesc':sheet==='ai'?'aiDesc':'taskDetailsDesc')}>
+  {sheet==='settings'&&<><SettingsBrand ws={ws}/><Preferences ws={ws}/><DataSettings ws={ws} onExport={exportBackup} onImport={importBackup}><Button variant="outline" onClick={exportCalendar}><CalendarDays size={14}/>{t('exportCalendar')}</Button></DataSettings><ListSettings ws={ws} run={run}/><AiSettings ws={ws}/><License ws={ws} onUpgrade={upgrade}/><div className="settings-section"><Button className="danger-action" variant="outline" disabled={busy||!state.tasks.some(task=>task.done)} onClick={async()=>{if(confirm(t('confirmClear'))&&await run('CLEAR_DONE'))notify(t('cleared'))}}><Trash2 size={14}/>{t('clearCompleted')}</Button></div><Shortcuts ws={ws}/></>}
+  {sheet==='upgrade'&&<UpgradePanel ws={ws}/>}
   {sheet==='task'&&<TaskDetails key={selected} ws={ws} id={selected} run={run} onClose={()=>setSheet(null)}/>}
   {sheet==='ai'&&<AiPanel ws={ws} run={run} listId={filter==='all'?'inbox':filter} onClose={()=>setSheet(null)}/>}
  </PanelSheet></section>
@@ -59,26 +63,21 @@ function TaskDetails({ws,id,run,onClose}){
  const save=async()=>{const draft={title:title.trim(),note,due,listId,...(ws.caps.tags?{tags:[...new Set(tags.split(/[,，]/).map(x=>x.trim()).filter(Boolean))]}:{})};const patch=Object.fromEntries(Object.entries(draft).filter(([key,value])=>JSON.stringify(value)!==JSON.stringify(base[key])));if(!Object.keys(patch).length||await run('PATCH',{id,patch})){onClose();ws.notify(t('taskUpdated'))}};
  return <>{task.url&&<div className="source-box"><a href={task.url} target="_blank" rel="noopener noreferrer"><Globe2 size={13}/>{domain(task.url)}<ArrowUpRight size={13}/></a>{task.excerpt&&<p>{task.excerpt}</p>}</div>}<label className="form-label">{t('title')}<input id="taskTitle" maxLength={140} value={title} onChange={e=>setTitle(e.target.value)}/></label><label className="form-label">{t('note')}<textarea rows={4} value={note} maxLength={10000} onChange={e=>setNote(e.target.value)} placeholder={t('notePlaceholder')}/></label><label className="form-label">{t('due')}<input type="date" value={due} onChange={e=>setDue(e.target.value)}/></label><label className="form-label">{t('list')}<select value={listId} onChange={e=>setListId(e.target.value)}>{ws.state.lists.map(list=><option value={list.id} key={list.id}>{nameOf(list,t)}</option>)}</select></label><label className="form-label">{t('tags')}<input disabled={!ws.caps.tags} value={tags} onChange={e=>setTags(e.target.value)} placeholder={t('tagsPlaceholder')}/>{!ws.caps.tags&&<small>{t('tagsPro')}</small>}</label><div className="detail-subtasks"><h4>{t('subtasks')}</h4>{task.subtasks.map(child=><div className="sub-row" data-done={child.done} key={child.id}><Checkbox checked={child.done} aria-label={child.title} onCheckedChange={()=>run('SUB_TOGGLE',{id,subId:child.id})}/><span>{child.title}</span><Button variant="ghost" size="icon-xs" aria-label={t('deleteSubtask')+': '+child.title} onClick={()=>run('SUB_DELETE',{id,subId:child.id})}><X size={13}/></Button></div>)}<form className="input-row subtask-add" onSubmit={async e=>{e.preventDefault();if(sub.trim()&&await run('SUB_ADD',{id,title:sub.trim()}))setSub('')}}><Plus size={15}/><input maxLength={140} aria-label={t('addSubtask')} placeholder={t('addSubtask')} value={sub} onChange={e=>setSub(e.target.value)}/><kbd>↵</kbd></form></div><Button className="primary-action" disabled={ws.busy||!title.trim()} onClick={save}>{t('save')}<Check size={15}/></Button><Button variant="outline" className="danger-action" disabled={ws.busy} onClick={async()=>{if(confirm(t('confirmDeleteTask'))&&await run('DELETE',{id})){onClose();ws.notify(t('deleted'))}}}><Trash2 size={14}/>{t('deleteTask')}</Button></>
 }
-function AiSettings({ws}){
- const [key,setKey]=useState(''),[model,setModel]=useState('gpt-4o-mini');
- useEffect(()=>{let alive=true;chrome.storage.local.get(['aiKey','aiModel']).then(data=>{if(alive){setKey(data.aiKey||'');setModel(data.aiModel||'gpt-4o-mini')}});return()=>{alive=false}},[]);
- return <div className="settings-section"><h4>{ws.t('aiConfig')}</h4><label className="form-label">{ws.t('aiKey')}<input id="aiKey" type="password" value={key} onChange={e=>setKey(e.target.value)} autoComplete="off" spellCheck="false" placeholder="sk-…"/></label><label className="form-label">{ws.t('aiModel')}<input id="aiModel" value={model} onChange={e=>setModel(e.target.value)} placeholder="gpt-4o-mini"/></label><Button id="btnAiSave" variant="outline" onClick={async()=>{try{await chrome.storage.local.set({aiKey:key.trim(),aiModel:model.trim()||'gpt-4o-mini'});ws.notify(ws.t('aiSaved'))}catch{ws.notify(ws.t('saveFailed'))}}}>{ws.t('aiSave')}</Button><p className="settings-note">{ws.t('aiKeyNote')}</p></div>
-}
 function AiPanel({ws,run,listId,onClose}){
+ const [config,setConfig]=useState(null);useEffect(()=>{readAiConfig().then(setConfig).catch(()=>{})},[]);
  const [input,setInput]=useState(''),[ops,setOps]=useState([]),[working,setWorking]=useState(false),[status,setStatus]=useState(''),[failed,setFailed]=useState(false),[previewInput,setPreviewInput]=useState(null),controllerRef=useRef(null);const {t}=ws;
  useEffect(()=>()=>controllerRef.current?.abort(),[]);
  const send=async()=>{
   if(!input.trim()||working)return;if(!ws.caps.ai){setFailed(true);setStatus(t('proFeature'));return}
-  const permission=chrome.permissions.request({origins:['https://api.openai.com/*']});setWorking(true);setOps([]);setFailed(false);setStatus(t('aiThinking'));setPreviewInput(null);
+  if(!config){setFailed(true);setStatus(t('aiNoKey'));return}const permission=requestAiPermission(config);setWorking(true);setOps([]);setFailed(false);setStatus(t('aiThinking'));setPreviewInput(null);
   try{
-   if(!await permission)throw new Error(t('aiPermission'));const data=await chrome.storage.local.get(['aiKey','aiModel']);if(!data.aiKey)throw new Error(t('aiNoKey'));
+   if(!await permission)throw new Error('aiPermission');
    const fresh=await chrome.runtime.sendMessage({type:'TT_OP',op:'READ'});if(!fresh?.ok||fresh.state.plan!=='pro')throw new Error(t('proFeature'));
    const snapshot=fresh.state.tasks.map(task=>({id:task.id,title:task.title,due:task.due,done:task.done,tags:task.tags}));
    const sys='Return only a JSON object {"ops": [...]}. Supported operations: add(title,due,tags,note), update(id,title,due,tags,note), done(id), del(id). Each item must contain op. Only make changes explicitly requested by the user. Existing task ids must come from the snapshot. Due dates use YYYY-MM-DD. Use the user’s language for new task text. Today is '+dateToday()+'. Current tasks: '+JSON.stringify(snapshot);
-   const controller=new AbortController();controllerRef.current=controller;const timer=setTimeout(()=>controller.abort(),45000);let response;
-   try{response=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',signal:controller.signal,headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.aiKey},body:JSON.stringify({model:data.aiModel||'gpt-4o-mini',temperature:0,response_format:{type:'json_object'},messages:[{role:'system',content:sys},{role:'user',content:input.trim()}]})})}finally{clearTimeout(timer)}
-   if(!response.ok)throw new Error(t('aiHTTP',{status:response.status}));const json=await response.json(),choice=json.choices?.[0];if(choice?.message?.refusal)throw new Error(t('aiRefused'));if(choice?.finish_reason==='length'||choice?.finish_reason==='content_filter')throw new Error(t('aiIncomplete'));
-   const raw=choice?.message?.content||'',parsed=JSON.parse(raw.replace(/^\s*`{3}(?:json)?\s*/i,'').replace(/\s*`{3}\s*$/,'').trim()),validated=validateAiOps(Array.isArray(parsed)?parsed:parsed.ops,fresh.state.tasks);
+   const controller=new AbortController();controllerRef.current=controller;
+   const raw=await requestAi(config,sys,input.trim(),{signal:controller.signal});
+   const parsed=JSON.parse(raw.replace(/^\s*`{3}(?:json)?\s*/i,'').replace(/\s*`{3}\s*$/,'').trim()),validated=validateAiOps(Array.isArray(parsed)?parsed:parsed.ops,fresh.state.tasks);
    setOps(validated);setPreviewInput(input.trim());setStatus(t('aiPending',{n:validated.length}));
   }catch(error){setOps([]);setFailed(true);setStatus(error.name==='AbortError'?t('aiTimeout'):error instanceof SyntaxError||error instanceof TypeError?t('aiFailed'):t(error.message))}
   finally{setWorking(false);controllerRef.current=null}

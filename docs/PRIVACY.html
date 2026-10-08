@@ -1,105 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TabTasks — Privacy Policy 隐私政策</title>
-<style>
-body{font:15px/1.8 system-ui,"Segoe UI","PingFang SC","Microsoft Yahei",sans-serif;
-max-width:720px;margin:40px auto;padding:0 20px;color:#1f2430}
-h1{font-size:26px;margin-bottom:4px}h2{font-size:18px;margin-top:32px;border-left:4px solid #6d5efc;padding-left:10px}
-.en{color:#1f2430}.zh{color:#4b5566}
-.badge{display:inline-block;background:#eef0ff;color:#4636e3;border-radius:999px;padding:2px 12px;font-size:12px;margin:6px 6px 0 0}
-footer{margin-top:48px;padding-top:16px;border-top:1px solid #e5e7eb;color:#8b93a7;font-size:13px}
-</style>
-</head>
-<body>
-<h1>TabTasks — Privacy Policy</h1>
-<p style="color:#8b93a7">Effective date 生效日期: 2026-10-05</p>
-<div>
-  <span class="badge">No accounts 无需账号</span>
-  <span class="badge">Tasks stored locally 任务存本机</span>
-  <span class="badge">No analytics 无统计追踪</span>
-  <span class="badge">Optional AI 可选 AI</span>
-</div>
-
-<h2>English</h2>
-<div class="en">
-<p><strong>TabTasks</strong> is a browser side-panel to-do &amp; page-capture extension.
-<strong>We do not sell your data or upload task content to developer servers.</strong>
-Only an explicit AI request sends the task snapshot described below directly to OpenAI.</p>
-
-<p><strong>What data exists, and where does it live?</strong><br>
-Everything you create in TabTasks — task titles, page links you capture, page text
-excerpts you choose to save, list names, tags, and due dates — is stored <em>only</em>
-in your own browser via the <code>chrome.storage</code> API. Optional AI and exports
-process selected data as described below. Uninstalling the extension (or explicitly
-clearing extension storage) deletes your local data. We have no server that stores task content.</p>
-
-<p><strong>Why does the extension request broad permissions?</strong><br>
-TabTasks reads the title and URL of the page you are actively viewing, and (if you
-are a Pro user) a short text excerpt, <em>only when you request capture through a button, shortcut or selection menu</em>.
-That information is written to local storage. Capture itself does not send task content
-to a server; a later explicit AI request sends only the snapshot described below.</p>
-
-<p><strong>Licensing &amp; payments.</strong><br>
-Pro is an optional one-time purchase through Stripe-hosted checkout. Before creating a checkout order, our purchase page explains the order data processing and asks you to agree and continue. Full card numbers and CVC are handled by Stripe. Our Cloudflare Worker creates the checkout and verifies its payment status through Stripe's API and signed webhooks. Each product has a separate Cloudflare D1 order database storing order, Checkout Session, PaymentIntent, product, price and event identifiers; amount, currency, payment/refund and license-delivery status; and timestamps. These records support license delivery, recovery and payment support. We do not store card details, checkout email addresses, billing addresses, raw webhook bodies, extension tasks or saved tab sessions in that database. The extension verifies the issued license locally. No usage telemetry is sent to the developer.</p>
-<p><strong>Order retention &amp; your requests.</strong><br>
-Order records are retained for license recovery and payment support; uninstalling the extension does not delete those server records. To request access, correction or deletion, contact the developer privately through the contact details on the GitHub profile. Do not publish order references or license keys in public issues. Deleting our order records does not delete Stripe's separate payment records and can affect license recovery. There is no automatic order-retention expiry at present. Stripe and Cloudflare process payment and service requests under their own policies: <a href="https://stripe.com/privacy">Stripe privacy</a> and <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare privacy</a>.</p>
-
-<p><strong>Optional AI assistant (bring your own key).</strong><br>
-The AI assistant is <em>off by default</em> and never contacts any server unless you
-enable it and paste your own OpenAI API key into the extension. When you use it, the
-task titles, IDs, due dates, completion state and tags, plus your instruction goes directly
-from your browser to <code>api.openai.com</code> under your key, and OpenAI's own
-privacy terms apply to that request. The key is stored only in your local
-<code>chrome.storage</code>, is never sent to us, and can be removed at any time from
-the settings drawer. Right-click selection capture and .ics calendar export are fully
-local and involve no network access.</p>
-
-<p><strong>Privacy policy for the Chrome Web Store listing:</strong> this extension
-stores tasks locally. Optional AI transmits task titles, IDs, due dates, completion state, tags and your instruction to OpenAI; notes, page URLs and page excerpts are not included in the AI snapshot. The optional host permission applies only to api.openai.com. API usage may incur charges under your OpenAI account.</p>
-
-<p><strong>Contact:</strong> open an issue at
-https://github.com/wd9337812/tabtasks or email the developer via the GitHub profile.</p>
-</div>
-
-<h2>中文</h2>
-<div class="zh">
-<p><strong>TabTasks</strong> 是一款浏览器侧边栏待办与网页收集扩展。我们声明：
-<strong>本扩展不出售用户数据，不向开发者服务器上传任务内容。仅在你点击 AI 发送时，将下述任务快照和指令直连发送给 OpenAI。</strong></p>
-
-<p><strong>数据存在哪里？</strong><br>
-你在 TabTasks 中创建的一切内容——任务标题、收集的网页链接、保存的正文摘要、
-列表名称、标签与到期日——<em>仅</em>通过 <code>chrome.storage</code> 存储在你自己的
-浏览器本地；仅在你主动使用 AI 助手或导出备份时按相应功能处理。卸载扩展（或明确清除扩展存储）即永久删除。
-我们没有存放任务内容的服务器。</p>
-
-<p><strong>为什么申请较宽的权限？</strong><br>
-仅在你主动点击收集、使用快捷键或右键选区时，扩展会读取当前页面的标题、网址，
-（Pro 用户）以及一小段正文摘要，并写入你的本地存储。收集动作本身不向服务器发送任务内容；
-之后主动使用 AI 时，仅发送下文说明的快照。</p>
-
-<p><strong>许可与支付。</strong><br>
-Pro 为可选的一次性买断，通过 Stripe 托管结账页付款。创建结账订单前，购买页会说明订单数据处理方式，由你点击同意后继续。完整卡号和 CVC 由 Stripe 处理。我们的 Cloudflare Worker 创建结账订单，通过 Stripe API 与经过签名验证的付款回调核对状态。两个商品各自使用独立的 Cloudflare D1 订单数据库，保存订单、Checkout Session、PaymentIntent、商品、价格与回调事件编号，金额、币种、付款／退款和授权签发状态，以及时间，用于授权签发、Key 找回和付款支持。该数据库不保存银行卡信息、结账邮箱、账单地址、原始回调内容、扩展任务或保存的标签会话。扩展在本机校验授权；不向开发者发送使用遥测。</p>
-<p><strong>订单保存与数据请求。</strong><br>
-订单记录保留用于授权找回与付款支持；卸载扩展不会删除这些服务器记录。需要查询、更正或删除时，请通过 GitHub 个人主页的联系方式私下联系开发者，勿在公开 Issue 发布付款编号或授权 Key。删除我们的订单记录不会删除 Stripe 独立保存的付款记录，并可能影响授权找回。目前没有自动清理订单的到期机制。Stripe 和 Cloudflare 按各自的隐私政策处理付款及服务请求：<a href="https://stripe.com/privacy">Stripe 隐私政策</a>、<a href="https://www.cloudflare.com/privacypolicy/">Cloudflare 隐私政策</a>。</p>
-
-<p><strong>可选 AI 助手（自带 Key）。</strong><br>
-AI 助手<em>默认关闭</em>：除非你主动开启并粘贴自己的 OpenAI API Key，扩展不会联系
-任何服务器。使用时，任务标题、ID、到期日、完成状态、标签及你的指令（不包含任务备注、网页链接和正文摘要）由你的浏览器直连
-<code>api.openai.com</code>，该请求受 OpenAI 自身隐私条款约束。API 调用可能产生你自己的 OpenAI 账户费用；联网权限仅限 api.openai.com。Key 仅存于本机
-<code>chrome.storage</code>，不会发给我们，可随时在设置抽屉中删除。
-右键选区捕获与 .ics 日程导出完全在本地完成，不产生任何网络请求。</p>
-
-<p><strong>联系方式：</strong>https://github.com/wd9337812/tabtasks 提交 Issue，
-或通过 GitHub 主页邮箱联系开发者。</p>
-</div>
-
-<footer>
-This page is part of the TabTasks public source repository
-(<a href="https://github.com/wd9337812/tabtasks">github.com/wd9337812/tabtasks</a>).<br>
-本页面属于 TabTasks 代码仓库，可直接用作 Chrome 应用商店的隐私政策链接。
-</footer>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TabTasks — Privacy Policy 隐私政策</title><style>body{font:15px/1.8 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;max-width:760px;margin:40px auto;padding:0 22px;color:#26303e}h1{font-size:28px}h2{font-size:21px;margin-top:36px}h3{font-size:16px;margin:24px 0 6px}a{color:#6154df}.date,footer{color:#738094;font-size:13px}footer{margin-top:40px;border-top:1px solid #e1e7ef;padding-top:16px}</style></head><body><h1>TabTasks — Privacy Policy 隐私政策</h1><p class="date">Updated / 生效日期：2026-10-08</p><h2>English</h2><h3>Local content</h3><p>Tasks, lists, notes, excerpts, subtasks, dates, preferences and the optional AI configuration stay in chrome.storage.local. AI API keys are excluded from exported backups and are not sent to the developer. Uninstalling or clearing extension storage deletes local content.</p>
+<h3>Permissions</h3><p>activeTab and scripting collect the page/selection you request; tabs reads the active page and opens saved links; contextMenus and commands provide capture shortcuts; storage saves local records; sidePanel displays the UI. Optional network permission is requested for the AI service address you choose.</p>
+<h3>Optional AI</h3><p>You choose OpenAI Chat Completions or Anthropic Messages compatible service, address and model. Only explicit connection tests or AI requests send data directly to that service. AI requests include your instruction and task IDs, titles, dates, completion state and tags; they exclude task URLs, notes and page excerpts. The API key goes only to the selected service, with no redirect following. Requests require HTTPS, except HTTP loopback for local models. That service applies its own retention and pricing policy; Pro does not include AI usage. Review proposed edits before applying.</p>
+<h3>Payments and automatic activation</h3><p>Pro is an optional one-time purchase through Stripe. Before checkout, you agree to order processing. Stripe handles card details. Each product has an isolated Cloudflare D1 database storing order, Checkout Session, PaymentIntent, product, price and webhook event IDs; amounts, currency, payment/refund/fulfillment state and timestamps. It also stores a keyed hash of the purchase email and a hash of the installation’s activation capability. We do not persist plaintext checkout emails, billing addresses, card details, raw webhook bodies, tasks or saved sessions in D1. The extension connects to its product’s billing origin to check payment or recover purchases. Only that origin’s success page can notify the extension; notifications alone do not grant Pro.</p>
+<h3>Purchase recovery email</h3><p>When you request purchase recovery, the address you enter is used in memory to look up its hash and, for an eligible purchase, sent to Resend to deliver a 6-digit verification code. This is separate from Stripe receipt emails. D1 stores hashes of the challenge code and requesting IP, attempts and timestamps. Codes expire after 10 minutes, allow up to 5 guesses and can be used once. Challenge records older than 24 hours are deleted when another recovery request is made. Purchase existence is not disclosed in the normal request response. Resend and Cloudflare may process service metadata under their own policies. Email recovery requires the operator’s sender configuration; the saved license code remains a fallback.</p>
+<h3>Retention, deletion and analytics</h3><p>There are no developer usage analytics or cloud task/session sync. Local content stays until you delete it, uninstall, or applicable snapshot cleanup runs. Order records have no automatic expiry and support license retrieval. Contact the developer privately via the GitHub profile to access, correct or request deletion; do not put payment references or licenses in public issues. Deleting our order record does not delete Stripe’s records and may prevent recovery. Previously activated offline licenses are not automatically revoked after refunds.</p>
+<h3>Service policies</h3><p><a href="https://stripe.com/privacy">Stripe</a> · <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> · <a href="https://resend.com/legal/privacy-policy">Resend</a></p><h2>中文</h2><h3>本地数据</h3><p>任务、列表、备注、摘要、子任务、日期、偏好及可选 AI 配置保存在 chrome.storage.local。AI API Key 不进入导出备份、不发送给开发者。卸载扩展或清除扩展存储会删除本地内容。</p>
+<h3>权限</h3><p>activeTab 与 scripting 收集你主动选择的网页／选区；tabs 读取当前网页并打开已保存链接；contextMenus 与 commands 提供收集快捷入口；storage 保存本地记录；sidePanel 展示界面。AI 联网权限仅按你选择的服务地址申请。</p>
+<h3>可选 AI</h3><p>由你选择 OpenAI Chat Completions 或 Anthropic Messages 兼容服务、地址和模型。只有主动测试连接或发起 AI 请求时直连该服务。AI 请求包含你的指令及任务 ID、标题、日期、完成状态和标签，不包含任务网址、备注或网页摘要。API Key 仅发送至所选服务，请求不跟随重定向。服务地址需为 HTTPS，本机回环模型允许 HTTP。该服务按自己的数据保留与定价政策处理，Pro 不含 AI 用量。修改先预览，再由你确认。</p>
+<h3>付款与自动激活</h3><p>Pro 可选，一次性通过 Stripe 付款；结账前会征求订单数据处理同意。银行卡信息由 Stripe 处理。两个商品各自使用独立 Cloudflare D1，保存订单、Checkout Session、PaymentIntent、商品、价格和回调事件编号，金额、币种、付款／退款／签发状态及时间，另保存购买邮箱的带密钥摘要及本机自动激活凭证摘要。D1 不持久保存明文结账邮箱、账单地址、卡信息、原始回调、任务或标签会话。扩展连接本商品付款服务核对订单或恢复购买；仅该域名的成功页可以通知扩展，通知本身不会授予 Pro。</p>
+<h3>邮件恢复购买</h3><p>主动恢复购买时，你输入的邮箱只在内存中用于计算摘要；若有符合条件的订单，邮箱将提交给 Resend 以投递 6 位验证码。这与 Stripe 收据邮件不同。D1 保存验证码和请求 IP 的摘要、尝试次数及时间。验证码 10 分钟过期、最多尝试 5 次、只能成功使用一次；超过 24 小时的挑战记录在后续恢复请求时清理。正常申请响应不会透露该邮箱是否购买。Resend 与 Cloudflare 可能按各自政策处理服务元数据。邮件恢复须由运营方配置发件服务，已有授权码仍可作为备用。</p>
+<h3>保留、删除与统计</h3><p>开发者不收集使用统计，也不提供任务／会话云同步。本地内容留存到你删除、卸载或触发相应快照清理。订单记录暂不自动过期，用于授权找回。需要查询、更正或删除，请通过 GitHub 主页联系方式私下联系，勿公开付款编号或授权码。删除我们的订单记录不影响 Stripe 自己保存的记录，并可能导致无法恢复购买。已激活的离线授权不会因退款自动撤销。</p>
+<h3>服务商政策</h3><p><a href="https://stripe.com/privacy">Stripe</a> · <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> · <a href="https://resend.com/legal/privacy-policy">Resend</a></p><footer><a href="./">TabTasks</a> · <a href="https://github.com/wd9337812/tabtasks">GitHub</a> · <a href="PRIVACY.html">Privacy</a> · <a href="SUPPORT.html">Support</a></footer></body></html>
