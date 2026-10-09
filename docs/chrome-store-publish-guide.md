@@ -32,3 +32,5 @@ Chrome 图片要求见 [官方图片说明](https://developer.chrome.com/docs/we
 ## 此次新增披露
 
 付款服务新增购买邮箱摘要、自动激活配对和可选验证码邮件；更新 PRIVACY.html 已说明。AI 按所选服务申请可选联网权限，支持两种兼容协议；用户主动使用时向其所选服务发送已披露任务快照。发布前按新版界面替换 Pro／设置相关截图。生产验收前阅读 worker/DEPLOY.md。
+
+客服邮箱：support@tabplugins.top。商店后台填写该公开客服邮箱；官网使用 Cloudflare 子域名，源码仓库无需作为公开支持入口。
