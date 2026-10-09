@@ -17,7 +17,7 @@ const CONFIG = {
   SECRET: "CHANGE_ME__paste_a_long_random_secret_here",
 
   // Stripe 收款链接（结账页/成功页把密钥发给用户）
-  STRIPE_PAYMENT_LINK: "https://tabtasks-pro-api.wd933781.workers.dev/buy",
+  STRIPE_PAYMENT_LINK: "https://pay-tabtasks.tabplugins.top/buy",
 
   // 免费 / Pro 功能门控
   FREE: {

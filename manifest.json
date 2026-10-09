@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TabTasks — Sidebar To-Do & Page Collector",
-  "version": "0.5.0",
-  "description": "Turn any web page into a to-do in one click. A lightweight sidebar task collector with lists, due dates, all local.",
+  "version": "0.5.1",
+  "description": "Capture webpages as tasks. Organize your next step with lists, dates and optional AI via compatible APIs.",
   "author": "you",
   "permissions": [
     "storage",
@@ -49,11 +49,14 @@
     "http://[::1]/*"
   ],
   "host_permissions": [
-    "https://tabtasks-pro-api.wd933781.workers.dev/*"
+    "https://tabtasks-pro-api.wd933781.workers.dev/*",
+    "https://pay-tabtasks.tabplugins.top/*"
   ],
   "externally_connectable": {
     "matches": [
-      "https://tabtasks-pro-api.wd933781.workers.dev/*"
+      "https://tabtasks-pro-api.wd933781.workers.dev/*",
+      "https://pay-tabtasks.tabplugins.top/*"
     ]
-  }
+  },
+  "homepage_url": "https://tabtasks.tabplugins.top/"
 }

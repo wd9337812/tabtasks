@@ -2,13 +2,17 @@
 # Keep LIC_SECRET / STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET / ADMIN_TOKEN in Worker secrets.
 name = "tabtasks-pro-api"
 main = "index.js"
-compatibility_date = "2026-09-01"
+compatibility_date = "2026-10-09"
+
+workers_dev = true
+routes = [{ pattern = "pay-tabtasks.tabplugins.top", custom_domain = true }]
 
 [vars]
 EXTENSION_ID = "oloegbmgmcklmfgcmjngkjdfciblkmkp"
 PRODUCT_SLUG = "tabtasks"
 PRODUCT_NAME = "TabTasks Pro"
-PUBLIC_ORIGIN = "https://tabtasks-pro-api.wd933781.workers.dev"
+PUBLIC_ORIGIN = "https://pay-tabtasks.tabplugins.top"
+SITE_ORIGIN = "https://tabtasks.tabplugins.top"
 CHECKOUT_MODE = "api"
 ALLOW_TEST_PAYMENTS = "false"
 ENABLE_PROVISIONING = "false"

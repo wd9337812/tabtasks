@@ -1,6 +1,6 @@
 # TabTasks
 
-Chrome 侧边栏扩展，版本 0.5.0，需要 Chrome 116+。默认英文，支持简体中文及浅色／深色／跟随系统。
+Chrome 侧边栏扩展，版本 0.5.1，需要 Chrome 116+。默认英文，支持简体中文及浅色／深色／跟随系统。
 
 免费版支持 30 个活动任务、2 个列表、网页和选区收集、备注、子任务、到期日及日历导出。Pro 支持无限活动任务和列表、标签、可读取网页的摘要、JSON 备份及可选 AI 助手。AI 支持 OpenAI Chat Completions 与 Anthropic Messages 兼容接口，可自定义服务地址、模型和 API Key；包含 OpenAI、Anthropic、DeepSeek 预设。免费版可配置并测试连接。
 
@@ -25,7 +25,9 @@ React、Tailwind、shadcn/ui、Motion 与 Lucide 均在本地打包，无运行�
 
 ## 发布与隐私
 
-扩展 ZIP 只包含运行文件，manifest 位于根目录。发布时保留现有签名配置，真实配置不提交 GitHub。Worker Billing 2.1.0 的迁移、扩展 ID 与邮件配置见 [worker/DEPLOY.md](worker/DEPLOY.md)。当前 HMAC 离线许可不提供强制撤销或设备数量控制；退款会阻止服务器重新签发，已激活的离线授权不会自动撤销。
+扩展 ZIP 只包含运行文件，manifest 位于根目录。发布时保留现有签名配置，真实配置不提交 GitHub。Worker Billing 2.1.1 的迁移、扩展 ID 与邮件配置见 [worker/DEPLOY.md](worker/DEPLOY.md)。当前 HMAC 离线许可不提供强制撤销或设备数量控制；退款会阻止服务器重新签发，已激活的离线授权不会自动撤销。
+
+官网 https://tabtasks.tabplugins.top/ ，支付 https://pay-tabtasks.tabplugins.top/buy 。网站由 Cloudflare Worker static assets 部署，配置见 site/wrangler.toml；原 workers.dev 付款地址及 Stripe 回调保留兼容。邮件恢复使用 Resend，发件密钥仅存 Worker Secrets。
 
 任务／会话不上传至付款服务；D1 记录订单信息及购买邮箱摘要，邮件恢复时向 Resend 提交邮箱以投递验证码。详见 [隐私政策](docs/PRIVACY.html)和[支持](docs/SUPPORT.html)。
 

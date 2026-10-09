@@ -1,4 +1,4 @@
-# TabTasks 0.5.0 迭代说明
+# TabTasks 0.5.1 迭代说明
 
 免费版支持 30 个活动任务、2 个列表、网页和选区收集、备注、子任务、到期日及日历导出。Pro 支持无限活动任务和列表、标签、可读取网页的摘要、JSON 备份及可选 AI 助手。AI 支持 OpenAI Chat Completions 与 Anthropic Messages 兼容接口，可自定义服务地址、模型和 API Key；包含 OpenAI、Anthropic、DeepSeek 预设。免费版可配置并测试连接。
 
