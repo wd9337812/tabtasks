@@ -22,11 +22,11 @@ const CONFIG = {
   // 免费 / Pro 功能门控
   FREE: {
     maxActiveTasks: 30,   // 免费可保留的最大未完成活动任务数
-    maxLists: 2,          // 免费可创建的列表数
-    tags: false,          // 标签（Pro）
-    excerpt: false,       // 抓取正文摘要（Pro）
-    ai: false,
-    export: false         // 导出/导入 JSON（Pro）
+    maxLists: 3,          // 免费自定义列表数；不含内置收集箱和今天
+    tags: true,          // 基础标签免费
+    excerpt: true,       // 主动收集网页短摘录
+    ai: true,
+    export: true         // 数据备份免费
   },
 
   PRO: {

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TabTasks — Sidebar To-Do & Page Collector",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Capture webpages as tasks. Organize your next step with lists, dates and optional AI via compatible APIs.",
   "author": "you",
   "permissions": [

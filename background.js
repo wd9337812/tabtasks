@@ -1,10 +1,10 @@
-importScripts('config.js', 'license.js', 'data.js', 'i18n.js', 'billing-client.js');
+importScripts('config.js', 'license.js', 'data.js', 'i18n.js', 'billing-client.js', 'workflows.js');
 const serialize = Data.queue();
 const DEFAULT_LISTS = [{ id: 'inbox', name: 'Inbox', color: '#6d5efc' }, { id: 'today', name: 'Today', color: '#f59e0b' }];
 async function readState() {
-  const raw = await chrome.storage.local.get(['lists', 'tasks', 'licenseKey', 'pendingCaptures', 'tt_ui']);
-  const ui = { langPref: raw.tt_ui?.langPref === 'zh' ? 'zh' : 'en', themePref: ['light','dark','auto'].includes(raw.tt_ui?.themePref) ? raw.tt_ui.themePref : 'light' };
-  I18N.setPref(ui.langPref);
+  const raw = await chrome.storage.local.get(['lists', 'tasks', 'licenseKey', 'pendingCaptures', 'tt_ui', 'tt_flows', 'tt_undo']);
+  const ui = { langPref: ['auto','en','zh'].includes(raw.tt_ui?.langPref) ? raw.tt_ui.langPref : 'auto', fontSize: ['compact','standard','large'].includes(raw.tt_ui?.fontSize) ? raw.tt_ui.fontSize : 'standard', themePref: ['light','dark','auto'].includes(raw.tt_ui?.themePref) ? raw.tt_ui.themePref : 'light' };
+  I18N.setPref(ui.langPref); ui.langResolved = I18N.lang();
   const lists = Data.records(raw.lists, Data.list), tasks = Data.records(raw.tasks, Data.task);
   if (!lists.values.length) lists.values = DEFAULT_LISTS.map(x => ({ ...x }));
   if (!lists.values.some(x => x.id === 'inbox')) lists.values.unshift({ ...DEFAULT_LISTS[0] });
@@ -12,13 +12,14 @@ async function readState() {
   tasks.values.forEach(t => { if (!allowed.has(t.listId)) t.listId = 'inbox'; });
   const license = raw.licenseKey ? await Lic.verify(raw.licenseKey, CONFIG.SECRET) : { ok: false };
   return { lists: lists.values, tasks: tasks.values, plan: license.ok && license.plan === 'pro' ? 'pro' : 'free',
-    license: license.ok ? license : null, ui, pending: Array.isArray(raw.pendingCaptures) ? raw.pendingCaptures : [], raw, invalid: lists.invalid || tasks.invalid };
+    license: license.ok ? license : null, flows: TaskFlows.load(raw.tt_flows), undo: raw.tt_undo, ui, pending: Array.isArray(raw.pendingCaptures) ? raw.pendingCaptures.map((item,index)=>Data.object(item)?{...item,id:Data.validId(item.id)?item.id:"pending_"+index+"_"+Data.fingerprint(item).replaceAll(":","_")}:item) : [], raw, invalid: lists.invalid || tasks.invalid };
 }
 const capsFor = s => s.plan === 'pro' ? CONFIG.PRO : CONFIG.FREE;
-const snapshot = s => ({ lists: s.lists, tasks: s.tasks, plan: s.plan, license: s.license, ui: s.ui, pendingCount: s.pending.length, recoveryAvailable: s.invalid });
+const snapshot = s => ({ lists: s.lists, tasks: s.tasks, plan: s.plan, license: s.license, ui: s.ui, flows: TaskFlows.data(s), undoAvailable: !!s.undo && s.undo.after === TaskFlows.signature(s) && Date.now()-s.undo.at < 864e5, pendingCount: s.pending.length, recoveryAvailable: s.invalid });
 async function writeState(s) {
   await Data.protect(s.raw, ['lists', 'tasks'], 'tt_recovery_backup_v1', s.invalid);
-  await chrome.storage.local.set({ lists: s.lists, tasks: s.tasks, pendingCaptures: s.pending });
+  await Data.protect(s.raw, ['tt_flows'], 'tt_flows_recovery_v1', s.flows.invalid);
+  await chrome.storage.local.set({ lists: s.lists, tasks: s.tasks, pendingCaptures: s.pending, tt_flows: TaskFlows.data(s), tt_undo: s.undo || null });
   await updateBadge(s);
 }
 async function updatePresentation() {
@@ -73,12 +74,21 @@ function patchTask(s, id, patch) {
   Object.assign(task, updated);
 }
 async function dispatch(op, p = {}) {
-  const s = await readState(); let changed = false, extra = {};
+  const s = await readState(); const before = structuredClone(TaskFlows.undoContent(s)); let changed = false, extra = {};
   if (op.startsWith('BILLING_')) { const billing=await BillingClient.dispatch(op,p); return {ok:true,state:snapshot(await readState()),...billing}; }
-  else if (op === 'READ') changed = consumePending(s) > 0;
+  else if (/^(TEMPLATE|VIEW|PROMPT)_(SAVE|DELETE|PREVIEW|RUN)$/.test(op)) { extra = TaskFlows.handle(s, op, p); changed = extra.changed; }
+  else if (op === 'UNDO') {
+    if (!snapshot(s).undoAvailable) Data.fail('stale','undoExpired');
+    TaskFlows.undo(s,s.undo.before); s.undo=null; changed=true;
+  }
+  else if (op === 'BULK_PATCH') {
+    if (!Array.isArray(p.ids)||!p.ids.length||new Set(p.ids).size!==p.ids.length) Data.fail('invalid','invalidSelection');
+    for(const id of p.ids) { if(p.delete) { if(!s.tasks.some(x=>x.id===id))Data.fail('missing','flowMissing');s.tasks=s.tasks.filter(x=>x.id!==id); } else patchTask(s,id,p.patch||{}); } changed=true;
+  }
+  else if (op === 'READ') { if(s.undo&&Date.now()-s.undo.at>=864e5){s.undo=null;await chrome.storage.local.remove('tt_undo');} changed = consumePending(s) > 0; }
   else if (op === 'UI_PREFS') {
-    const ui = { ...s.ui, ...Object.fromEntries(['langPref','themePref'].filter(k => Object.hasOwn(p,k)).map(k => [k,p[k]])) };
-    if (!['en','zh'].includes(ui.langPref) || !['light','dark','auto'].includes(ui.themePref)) Data.fail('invalid','Invalid preference');
+    const ui = { ...s.ui, ...Object.fromEntries(['langPref','themePref','fontSize'].filter(k => Object.hasOwn(p,k)).map(k => [k,p[k]])) };
+    if (!['auto','en','zh'].includes(ui.langPref) || !['compact','standard','large'].includes(ui.fontSize) || !['light','dark','auto'].includes(ui.themePref)) Data.fail('invalid','Invalid preference');
     await chrome.storage.local.set({ tt_ui: ui }); I18N.setPref(ui.langPref); await updatePresentation();
     return { ok:true, state:snapshot(await readState()) };
   }
@@ -105,7 +115,7 @@ async function dispatch(op, p = {}) {
     changed = true;
   }
   else if (op === 'LIST_ADD') {
-    if (s.lists.length >= capsFor(s).maxLists) Data.fail('limit', I18N.t('limitLists',{n:CONFIG.FREE.maxLists}));
+    if (s.lists.filter(x=>!TaskFlows.builtins.has(x.id)).length >= capsFor(s).maxLists) Data.fail('limit', I18N.t('limitLists',{n:CONFIG.FREE.maxLists}));
     s.lists.push(Data.list({ id: Data.id(), name: p.name, color: '#10b981' })); changed = true;
   }
   else if (op === 'LIST_DELETE') {
@@ -119,14 +129,20 @@ async function dispatch(op, p = {}) {
     const newLists = lists.filter(l => !haveL.has(l.id)), newTasks = tasks.filter(t => !haveT.has(t.id));
     const known = new Set([...s.lists, ...newLists].map(l => l.id));
     if (newTasks.some(t => !known.has(t.listId))) Data.fail('invalid', I18N.t("备份引用了不存在的列表"));
-    s.lists.push(...newLists); s.tasks.unshift(...newTasks); changed = true;
+    TaskFlows.merge(s,p.data.flows); s.lists.push(...newLists); s.tasks.unshift(...newTasks); changed = true;
     extra.importedTasks = newTasks.length; extra.importedLists = newLists.length;
   }
   else if (op === 'AI_APPLY') {
     requireFeature(s, 'ai');
+    const scope = Array.isArray(p.scopeIds) ? [...new Set(p.scopeIds)] : [];
+    if (s.plan !== 'pro' && scope.length !== 1) Data.fail('pro','aiBatchPro');
+    if (scope.length>200)Data.fail('invalid','flowTooLarge');
+    if (scope.some(id=>!s.tasks.some(t=>t.id===id))) Data.fail('stale','flowStale');
+    if(p.expected&&scope.some(id=>p.expected[id]!==JSON.stringify(s.tasks.find(t=>t.id===id))))Data.fail('stale','flowStale');
     if (!Array.isArray(p.ops) || !p.ops.length || p.ops.length > 200) Data.fail('invalid', I18N.t("AI 操作格式不正确"));
     for (const o of p.ops) {
       if (!Data.object(o)) Data.fail('invalid', I18N.t("AI 操作格式不正确"));
+      if ((s.plan !== 'pro' || scope.length) && o.op !== 'add' && !scope.includes(o.id)) Data.fail('invalid','aiScope');
       if (o.op === 'add') addTask(s, { title: o.title, due: o.due || '', tags: o.tags || [], note: o.note || '', listId: p.listId || 'inbox', source: 'ai' });
       else if (o.op === 'update') patchTask(s, o.id, o);
       else if (o.op === 'done') patchTask(s, o.id, { done: true });
@@ -142,7 +158,7 @@ async function dispatch(op, p = {}) {
   }
   else if (op === 'LICENSE_RELEASE') { await chrome.storage.local.remove('licenseKey'); return { ok: true, state: snapshot(await readState()) }; }
   else Data.fail('invalid', I18N.t('unknown'));
-  if (changed) { consumePending(s); await writeState(s); }
+  if (changed) { consumePending(s); if(op!=='UNDO'&&op!=='READ') { const after=TaskFlows.signature(s); const changes=Data.makeUndo(before,TaskFlows.undoContent(s));if(Object.keys(changes).length)s.undo={at:Date.now(),before:changes,after}; } await writeState(s); }
   return { ok: true, state: snapshot(s), ...extra };
 }
 function request(op, payload) { return serialize(() => dispatch(op, payload)); }

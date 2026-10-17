@@ -60,4 +60,4 @@ const I18N=(()=>{const dict={
     "unknown": "未知操作",
     "open": "打开 TabTasks 侧栏"
   }
-};let pref='en';return{setPref(value){pref=value==='zh'?'zh':'en'},lang(){return pref},t(key,vars={}){return String(dict[pref][key]??key).replace(/\{(\w+)\}/g,(match,k)=>Object.hasOwn(vars,k)?String(vars[k]):match)}}})();
+};let pref='auto';const resolved=()=>{if(pref==='zh'||pref==='en')return pref;try{return /^zh(?:-|$)/i.test(chrome.i18n?.getUILanguage?.()||navigator.language||'')?'zh':'en'}catch{return'en'}};return{setPref(value){pref=['zh','en'].includes(value)?value:'auto'},lang:resolved,t(key,vars={}){return String(dict[resolved()][key]??key).replace(/\{(\w+)\}/g,(match,k)=>Object.hasOwn(vars,k)?String(vars[k]):match)}}})();
